@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             // Step 1: Send specialty to your Python backend to get questions
-            const response = await fetch('https://your-app.onrender.com/', { 
+            const response = await fetch('https://wojhati.onrender.com/', { 
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             // Step 2: Send questions and answers to your Python backend
-            const response = await fetch('https://your-app.onrender.com/', { 
+            const response = await fetch('https://wojhati.onrender.com/', { 
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
