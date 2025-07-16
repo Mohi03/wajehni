@@ -1,0 +1,81 @@
+from flask import Flask, jsonify, request, render_template
+from flask_cors import CORS
+import google.generativeai as genai
+from google.generativeai import types
+
+app = Flask(__name__)
+CORS(app, origins="*")
+
+
+@app.route('/', methods=['GET'])
+def home():
+    return render_template('index.html')
+
+
+@app.route('/', methods=['POST'])
+def main():
+    
+    data = request.get_json()
+    specialty = data.get("specialty")
+    answers = data.get("answers", [])  
+        
+    try:
+        genai.configure(api_key="AIzaSyBzS4ZG8WdpuSIESr4omIJmAC2j_TVmJbo")
+            
+        if not answers:
+            model = genai.GenerativeModel('gemini-2.0-flash')
+            response = model.generate_content(
+                f"Write 15 simple and clear questions in Arabic only to help a student in Algeria explore suitable university majors. Make the questions as short as possible, preferably yes/no or requiring only short answers. Do not write anything except the questions directly. Specialty: {specialty}"
+            )
+            return jsonify({
+                'questions': response.text
+            })
+            
+
+        model = genai.GenerativeModel('gemini-2.0-flash')
+        response = model.generate_content(
+            f"""Analyze a student's responses to a series of career guidance questions and, based on their input, suggest suitable college major specializations.
+
+Base your suggestions primarily on the student's secondary school specialty and their answers to the questions.
+
+Student's secondary school specialty: {specialty}
+
+Input Format for Student Responses:
+
+The student's answers will be provided in a clear, question-and-answer format, where each answer directly follows the question it addresses.
+
+Analysis and Output Instructions:
+
+Based on the student's provided answers, suggest 2-3 specific college major specializations in algeria , make sure that the specializations exist in algeria , align with their stated inclinations. For each suggested major, briefly explain why it's a good fit, directly linking it to the patterns observed in the student's responses.
+
+Focus the justification on:
+
+Favorite subjects and topics: What did they enjoy learning or doing most?
+
+Skills demonstrated: What aptitudes or talents did they reveal (e.g., analytical thinking, creative writing, problem-solving, research)?
+
+Preferred activities/environments: Do they prefer lab work, fieldwork, theoretical study, writing, discussion, hands-on application, etc.?
+
+Career aspirations (if mentioned): What future roles or types of work appeal to them?
+
+Dislikes/Areas to avoid: What did they explicitly state they don't want to pursue?
+
+Consider the nuances in their answers. For instance, if a Science student enjoyed Biology but disliked detailed lab work, suggest majors that are more conceptual or field-based. If a Literature student loved creative writing but disliked literary criticism, emphasize creative arts over academic research.
+
+Provide the suggestions clearly, followed by a concise justification based only on the student's provided answers. If the answers point very strongly in one direction, fewer suggestions are acceptable.
+answer with arabic . thr suggestions must be available in algeria colleges
+answer directly dont write anything accept the suggestions dont write why just give the specializations
+
+Student answers: {answers}"""
+        )
+        return jsonify({
+            'suggestions': response.text
+        })
+        
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+        
+
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0', port=5001)
