@@ -63,7 +63,7 @@ Dislikes/Areas to avoid: What did they explicitly state they don't want to pursu
 Consider the nuances in their answers. For instance, if a Science student enjoyed Biology but disliked detailed lab work, suggest majors that are more conceptual or field-based. If a Literature student loved creative writing but disliked literary criticism, emphasize creative arts over academic research.
 
 Provide the suggestions clearly, followed by a concise justification based only on the student's provided answers. If the answers point very strongly in one direction, fewer suggestions are acceptable.
-answer with arabic . thr suggestions must be available in algeria colleges
+answer with arabic . thr suggestions must be available in algeria colleges make sure to give the suggestions based on what spcialty exist in algeria colleges
 answer directly dont write anything accept the suggestions dont write why just give the specializations
 
 Student answers: {answers}"""
