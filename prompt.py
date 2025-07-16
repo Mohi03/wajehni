@@ -25,7 +25,77 @@ def main():
         if not answers:
             model = genai.GenerativeModel('gemini-2.0-flash')
             response = model.generate_content(
-                f"Write 15 simple and clear questions in Arabic only to help a student in Algeria explore suitable university majors. Make the questions as short as possible, preferably yes/no or requiring only short answers. Do not write anything except the questions directly. Specialty: {specialty}"
+                f"""Write 15 simple and clear questions in Arabic only to help a student in Algeria explore suitable university majors. Make the questions as short as possible, preferably yes/no or requiring only short answers. Do not write anything except the questions directly.
+                this is the specialty of colleges they might help u give the quetions 
+                علوم وتكنولوجيا
+علوم المادة
+
+علوم الطبيعة والحياة
+
+رياضيات وإعلام آلي
+
+علوم الأرض والكون
+
+علوم إقتصادية، التسيير وعلوم تجارية
+
+حقوق وعلوم سياسية
+
+علوم إنسانية واجتماعية
+
+آداب ولغات أجنبية
+
+لغة وأدب عربي
+
+لغة وثقافة أمازيغية
+
+علوم وتقنيات النشاطات البدنية والرياضية
+
+فنون
+
+علوم إسلامية
+
+هندسة معمارية، عمران ومهن المدينة
+
+الطب
+
+طب الأسنان
+
+الصيدلة
+
+العلوم شبه الطبية
+
+البيطرة
+
+المدارس الوطنية العليا للأساتذة (تخصصات مختلفة)
+
+المدارس الوطنية المتعددة التقنيات (تخصصات هندسية)
+
+المدرسة الوطنية العليا للإعلام الآلي
+
+المدرسة الوطنية العليا للذكاء الاصطناعي
+
+المدرسة الوطنية العليا للرياضيات
+
+المدرسة الوطنية العليا للإحصاء والاقتصاد التطبيقي
+
+المدرسة الوطنية العليا لعلوم البحر وتهيئة الساحل
+
+المدرسة الوطنية العليا للصحافة وعلوم الإعلام
+
+المدرسة الوطنية العليا للبيوتكنولوجيا
+
+المدرسة الوطنية العليا للفلاحة
+
+المدارس العليا للتسيير
+
+المدارس العليا للاقتصاد
+
+المدارس العليا للتجارة
+
+المدارس التحضيرية (للعلوم والتقنيات)
+
+المدارس التحضيرية (للعلوم الاقتصادية والتجارية وعلوم التسيير)
+                Specialty: {specialty}"""
             )
             return jsonify({
                 'questions': response.text
@@ -63,7 +133,76 @@ Dislikes/Areas to avoid: What did they explicitly state they don't want to pursu
 Consider the nuances in their answers. For instance, if a Science student enjoyed Biology but disliked detailed lab work, suggest majors that are more conceptual or field-based. If a Literature student loved creative writing but disliked literary criticism, emphasize creative arts over academic research.
 
 Provide the suggestions clearly, followed by a concise justification based only on the student's provided answers. If the answers point very strongly in one direction, fewer suggestions are acceptable.
-answer with arabic . thr suggestions must be available in algeria colleges make sure to give the suggestions based on what spcialty exist in algeria colleges
+answer with arabic . thr suggestions must be available in algeria colleges make sure to give the suggestions based on what spcialty exist in algeria colleges and this is the specialtys
+علوم وتكنولوجيا
+
+علوم المادة
+
+علوم الطبيعة والحياة
+
+رياضيات وإعلام آلي
+
+علوم الأرض والكون
+
+علوم إقتصادية، التسيير وعلوم تجارية
+
+حقوق وعلوم سياسية
+
+علوم إنسانية واجتماعية
+
+آداب ولغات أجنبية
+
+لغة وأدب عربي
+
+لغة وثقافة أمازيغية
+
+علوم وتقنيات النشاطات البدنية والرياضية
+
+فنون
+
+علوم إسلامية
+
+هندسة معمارية، عمران ومهن المدينة
+
+الطب
+
+طب الأسنان
+
+الصيدلة
+
+العلوم شبه الطبية
+
+البيطرة
+
+المدارس الوطنية العليا للأساتذة (تخصصات مختلفة)
+
+المدارس الوطنية المتعددة التقنيات (تخصصات هندسية)
+
+المدرسة الوطنية العليا للإعلام الآلي
+
+المدرسة الوطنية العليا للذكاء الاصطناعي
+
+المدرسة الوطنية العليا للرياضيات
+
+المدرسة الوطنية العليا للإحصاء والاقتصاد التطبيقي
+
+المدرسة الوطنية العليا لعلوم البحر وتهيئة الساحل
+
+المدرسة الوطنية العليا للصحافة وعلوم الإعلام
+
+المدرسة الوطنية العليا للبيوتكنولوجيا
+
+المدرسة الوطنية العليا للفلاحة
+
+المدارس العليا للتسيير
+
+المدارس العليا للاقتصاد
+
+المدارس العليا للتجارة
+
+المدارس التحضيرية (للعلوم والتقنيات)
+
+المدارس التحضيرية (للعلوم الاقتصادية والتجارية وعلوم التسيير)
 answer directly dont write anything accept the suggestions dont write why just give the specializations
 
 Student answers: {answers}"""
