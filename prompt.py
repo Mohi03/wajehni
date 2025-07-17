@@ -25,7 +25,7 @@ def main():
         if not answers:
             model = genai.GenerativeModel('gemini-2.0-flash')
             response = model.generate_content(
-                f"""Write 15 simple and clear questions in Arabic only to help a student in Algeria explore suitable university majors. Make the questions as short as possible, preferably yes/no or requiring only short answers. Do not write anything except the questions directly.
+                f"""Write 15 simple and clear questions in Arabic only to help a student in Algeria explore suitable university majors. make the quetions yes/no. Do not write anything except the questions directly.
                 this is the specialty of colleges they might help u give the quetions 
                 علوم وتكنولوجيا
 علوم المادة
