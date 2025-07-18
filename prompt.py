@@ -25,7 +25,7 @@ def main():
         if not answers:
             model = genai.GenerativeModel('gemini-2.0-flash')
             response = model.generate_content(
-                f"""Write 15 simple and clear questions in Arabic only to help a student in Algeria explore suitable university majors.you have make sure that the quetions are only yes/no questions. Do not write anything except the questions directly.
+                f"""Write 15 simple and clear yes or no questions in Arabic only. to help a student in Algeria explore suitable university majors.you have make sure that the quetions are only yes/no questions. Do not write anything except the questions directly.
                 this is the specialty of colleges they might help u give the quetions 
                 علوم وتكنولوجيا
 علوم المادة
@@ -109,6 +109,7 @@ def main():
 
 Base your suggestions primarily on the student's secondary school specialty and their answers to the questions.
 
+If the student's answers are negative for all questions, or show no interest in any field, suggest joining the military as a suitable option.
 Student's secondary school specialty: {specialty}
 
 Input Format for Student Responses:
