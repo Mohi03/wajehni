@@ -109,7 +109,7 @@ def main():
 
 Base your suggestions primarily on the student's secondary school specialty and their answers to the questions.
 
-If the student's answers are negative for all questions, or show no interest in any field, suggest joining the military as a suitable option.
+If the student's answers are negative for all questions, or show no interest in any field,try to explain to him suggest joining the military as a suitable option.
 Student's secondary school specialty: {specialty}
 
 Input Format for Student Responses:
