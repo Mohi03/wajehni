@@ -26,7 +26,8 @@ def main():
             model = genai.GenerativeModel('gemini-2.0-flash')
             response = model.generate_content(
                 f"""Write 15 simple and clear yes or no questions in Arabic only. to help a student in Algeria explore suitable university majors.you have make sure that the quetions are only yes/no questions. dont ask if they wnat to work alone or in a team. Do not write anything except the questions directly.
-                this is the specialty of colleges they might help u give the quetions 
+                this is the specialty of colleges use them and based of them and the specialty of secondry school i will give u. u can use all of them to create meaninfull quetions. i will use the answers of this questions later to choose my future specialty of college
+                existing colleges specialty :
                 علوم وتكنولوجيا
 علوم المادة
 
