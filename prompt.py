@@ -95,8 +95,7 @@ def main():
 المدارس التحضيرية (للعلوم والتقنيات)
 
 المدارس التحضيرية (للعلوم الاقتصادية والتجارية وعلوم التسيير)
-                Specialty: {specialty}""",
-                generation_config={"temperature": 0.0}
+                Specialty: {specialty}"""
             )
             return jsonify({
                 'questions': response.text
@@ -207,8 +206,7 @@ answer with arabic . thr suggestions must be available in algeria colleges make 
 المدارس التحضيرية (للعلوم الاقتصادية والتجارية وعلوم التسيير)
 answer directly dont write anything accept the suggestions dont write why just give the specializations
 
-Student answers: {answers}""",
-            generation_config={"temperature": 0.0}
+Student answers: {answers}"""
         )
         return jsonify({
             'suggestions': response.text
