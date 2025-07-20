@@ -1,5 +1,36 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Get DOM elements
+    // Get DOM elements for navigation
+    const startAppBtn = document.getElementById('start-app-btn');
+    const backToHomeBtn = document.getElementById('back-to-home-btn');
+    const mainAppSection = document.getElementById('main-app-section');
+    const landingPage = document.querySelector('.hero-section').parentElement;
+
+    // Navigation functionality
+    startAppBtn.addEventListener('click', () => {
+        // Hide landing page sections
+        document.querySelectorAll('.hero-section, .features-section, .how-it-works-section, .support-section, .app-info-section').forEach(section => {
+            section.style.display = 'none';
+        });
+        // Show main app section
+        mainAppSection.style.display = 'block';
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    backToHomeBtn.addEventListener('click', () => {
+        // Show landing page sections
+        document.querySelectorAll('.hero-section, .features-section, .how-it-works-section, .support-section, .app-info-section').forEach(section => {
+            section.style.display = 'block';
+        });
+        // Hide main app section
+        mainAppSection.style.display = 'none';
+        // Reset app state
+        resetAppState();
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // Get DOM elements for main app functionality
     const specialtyDropdown = document.getElementById('specialty-dropdown');
     const getQuestionsBtn = document.getElementById('get-questions-btn');
     const specialtyError = document.getElementById('specialty-error');
@@ -190,14 +221,23 @@ document.addEventListener('DOMContentLoaded', () => {
         getQuestionsBtn.disabled = false;
         submitAnswersBtn.disabled = false;
     }
-}); 
 
-// === Support Section Interactivity ===
+    function resetAppState() {
+        // Reset all app state when going back to home
+        specialtySelection.style.display = 'block';
+        questionsSection.style.display = 'none';
+        suggestionsSection.style.display = 'none';
+        specialtyDropdown.value = "";
+        questionsForm.innerHTML = "";
+        majorSuggestionsDiv.innerHTML = "";
+        currentQuestions = [];
+        specialtyError.textContent = "";
+        answersError.textContent = "";
+        hideLoading();
+    }
 
-// Wait for DOMContentLoaded as before
+    // === Support Section Interactivity ===
 
-document.addEventListener('DOMContentLoaded', () => {
-    // --- Support Section: Copy Email to Clipboard ---
     // Add a toast/snackbar element if not present
     let toast = document.getElementById('custom-toast');
     if (!toast) {
@@ -218,6 +258,7 @@ document.addEventListener('DOMContentLoaded', () => {
         toast.style.zIndex = '9999';
         document.body.appendChild(toast);
     }
+
     function showToast(msg) {
         toast.textContent = msg;
         toast.style.opacity = '1';
@@ -226,25 +267,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 1800);
     }
 
-    // Find the email span in the support card
-    const supportCard = document.querySelector('.support-card');
-    if (supportCard) {
-        const emailSpan = Array.from(supportCard.querySelectorAll('span')).find(
-            el => el.textContent && el.textContent.includes('ONJPA57@gmail.com')
-        );
-        if (emailSpan) {
-            emailSpan.style.cursor = 'pointer';
-            emailSpan.title = 'انسخ البريد الإلكتروني';
-            emailSpan.addEventListener('click', () => {
-                navigator.clipboard.writeText('ONJPA57@gmail.com').then(() => {
-                    showToast('تم النسخ');
-                });
+    // Find the email contact in the support section
+    const emailContact = document.getElementById('email-contact');
+    if (emailContact) {
+        emailContact.style.cursor = 'pointer';
+        emailContact.title = 'انسخ البريد الإلكتروني';
+        emailContact.addEventListener('click', () => {
+            navigator.clipboard.writeText('ONJPA57@gmail.com').then(() => {
+                showToast('تم النسخ');
             });
-        }
+        });
     }
 
     // --- Social Links: Visual Feedback on Click ---
-    const socialLinks = supportCard ? supportCard.querySelectorAll('a') : [];
+    const socialLinks = document.querySelectorAll('.support-item a');
     socialLinks.forEach(link => {
         link.addEventListener('mousedown', () => {
             link.style.background = 'rgba(34,197,94,0.10)';
