@@ -1,50 +1,130 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl"> <!-- Added dir="rtl" for Arabic content -->
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> test </title> <!-- Arabic title -->
+    <title>وجهني</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
     <div class="container">
-        <h1> الاسم </h1>
-
-        <div id="specialty-selection">
-            <p>الرجاء اختيار تخصصك في المرحلة الثانوية:</p>
-            <select id="specialty-dropdown">
-                <option value="">--اختر--</option>
-                <option value="Experimental Sciences">شعبة العلوم التجريبية</option>
-                <option value="Mathematics">شعبة الرياضيات</option>
-                <option value="Technical Mathematics">شعبة التقني رياضي</option>
-                <option value="Management and Economics">شعبة التسيير والاقتصاد</option>
-                <option value="Foreign Languages">شعبة اللغات الأجنبية</option>
-                <option value="Literature and Philosophy">شعبة الآداب والفلسفة</option>
-            </select>
-            <button id="get-questions-btn">احصل على الأسئلة</button>
-            <p id="specialty-error" class="error-message"></p>
+        <!-- App Header -->
+        <div class="card">
+            <span class="card-title"><i class="material-icons">school</i>وجهني</span>
+            <p style="font-size: 1.1em; color: #059669; margin-bottom: 0;">تطبيق لتحديد التخصصات المناسبة لك</p>
         </div>
 
-        <div id="questions-section" style="display: none;">
-            <h2>أجب عن الأسئلة التالية:</h2>
-            <form id="questions-form">
-                <!-- Questions will be dynamically loaded here by JavaScript -->
-            </form>
-            <button id="submit-answers-btn">انشاء الاقتراحات </button>
-            <p id="answers-error" class="error-message"></p>
+        <!-- App Info Card -->
+        <div class="info-card">
+            <span class="card-title"><i class="material-icons">info</i>معلومات التطبيق</span>
+            <p style="margin-bottom: 8px; color: #666;">الإصدار: 1.0.0</p>
+            <p style="font-size: 1em; color: #444;">تطبيق وجهني يساعدك في اختيار التخصص الجامعي المناسب لك بناءً على إجاباتك على مجموعة من الأسئلة المخصصة لكل تخصص. هذا التطبيق إصدار تجريبي وقد يحتوي على بعض الأخطاء أو المشاكل. نرحب بأي ملاحظات أو اقتراحات لتحسين التجربة.</p>
         </div>
 
-        <div id="suggestions-section" style="display: none;">
-            <h2>التخصصات الجامعية المقترحة:</h2>
-            <div id="major-suggestions">
-                <!-- Major suggestions will be displayed here by JavaScript -->
+        <!-- Instructions Card -->
+        <div class="instructions-card">
+            <span class="card-title"><i class="material-icons">help_outline</i>كيفية الاستخدام</span>
+            <ol style="padding-right: 20px; color: #333;">
+                <li>اختر شعبتك</li>
+                <li>أجب على الأسئلة بصدق ودقة</li>
+                <li>احصل على التوصيات المناسبة</li>
+            </ol>
+        </div>
+
+        <!-- Support Card -->
+        <div class="support-card">
+            <span class="card-title"><i class="material-icons">support_agent</i>الدعم الفني</span>
+            <ul style="list-style: none; padding: 0; margin: 0;">
+                <li style="margin-bottom: 10px; display: flex; align-items: center;">
+                    <i class="material-icons" style="color: var(--primary); margin-left: 8px;">email</i>
+                    <span style="font-weight: 600; color: #222;">البريد الإلكتروني:</span>
+                    <span style="margin-right: 6px; color: #059669;">ONJPA57@gmail.com</span>
+                </li>
+                <li style="margin-bottom: 10px; display: flex; align-items: center;">
+                    <i class="material-icons" style="color: #e1306c; margin-left: 8px;">camera_alt</i>
+                    <span style="font-weight: 600; color: #222;">إنستغرام:</span>
+                    <a href="https://www.instagram.com/on.youths57?igsh=MzlleWs4cTBtODAw" target="_blank" style="color: #e1306c; margin-right: 6px; text-decoration: underline;">@on.youths57</a>
+                </li>
+                <li style="margin-bottom: 10px; display: flex; align-items: center;">
+                    <i class="material-icons" style="color: #1877f3; margin-left: 8px;">facebook</i>
+                    <span style="font-weight: 600; color: #222;">فيسبوك:</span>
+                    <a href="https://www.facebook.com/share/1GFE5AQ6CN/" target="_blank" style="color: #1877f3; margin-right: 6px; text-decoration: underline;">صفحة الفيسبوك</a>
+                </li>
+                <li style="display: flex; align-items: center;">
+                    <i class="material-icons" style="color: var(--primary); margin-left: 8px;">assignment</i>
+                    <span style="font-weight: 600; color: #222;">نموذج التسجيل:</span>
+                    <a href="https://forms.gle/G76ABDGG2Pms1M7b6" target="_blank" style="color: var(--primary); margin-right: 6px; text-decoration: underline;">رابط الالتحاق</a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Features Section -->
+        <div class="card">
+            <span class="card-title"><i class="material-icons">star</i>المميزات</span>
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <i class="material-icons">quiz</i>
+                    <div class="feature-title">الاختبارات المخصصة</div>
+                    <div class="feature-desc">أسئلة لكل تخصص</div>
+                </div>
+                <div class="feature-item">
+                    <i class="material-icons">lightbulb</i>
+                    <div class="feature-title">الاقتراحات الذكية</div>
+                    <div class="feature-desc">الاقتراحات بناءً على الإجابات</div>
+                </div>
+                <div class="feature-item">
+                    <i class="material-icons">touch_app</i>
+                    <div class="feature-title">واجهة مبسطة</div>
+                    <div class="feature-desc">تصميم بسيط وسهل</div>
+                </div>
+                <div class="feature-item">
+                    <i class="material-icons">update</i>
+                    <div class="feature-title">تحديثات مستمرة</div>
+                    <div class="feature-desc">التحسينات القادمة</div>
+                </div>
             </div>
-            <button id="start-over-btn">البدء من جديد</button>
         </div>
 
-        <div id="loading-spinner" class="spinner" style="display: none;"></div>
-    </div>
+        <!-- Main App Flow: Specialty Selection, Questions, Suggestions -->
+        <div class="card">
+            <div id="specialty-selection">
+                <h2><i class="material-icons" style="vertical-align: middle; color: var(--primary);">category</i> اختر التخصص</h2>
+                <p>الرجاء اختيار تخصصك في المرحلة الثانوية:</p>
+                <select id="specialty-dropdown">
+                    <option value="">--اختر--</option>
+                    <option value="Experimental Sciences">شعبة العلوم التجريبية</option>
+                    <option value="Mathematics">شعبة الرياضيات</option>
+                    <option value="Technical Mathematics">شعبة التقني رياضي</option>
+                    <option value="Management and Economics">شعبة التسيير والاقتصاد</option>
+                    <option value="Foreign Languages">شعبة اللغات الأجنبية</option>
+                    <option value="Literature and Philosophy">شعبة الآداب والفلسفة</option>
+                </select>
+                <button id="get-questions-btn">ابدأ الاختبار</button>
+                <p id="specialty-error" class="error-message"></p>
+            </div>
 
+            <div id="questions-section" style="display: none;">
+                <h2><i class="material-icons" style="vertical-align: middle; color: var(--primary);">quiz</i> أجب عن الأسئلة التالية:</h2>
+                <form id="questions-form">
+                    <!-- Questions will be dynamically loaded here by JavaScript -->
+                </form>
+                <button id="submit-answers-btn">إنشاء الاقتراحات</button>
+                <p id="answers-error" class="error-message"></p>
+            </div>
+
+            <div id="suggestions-section" style="display: none;">
+                <h2><i class="material-icons" style="vertical-align: middle; color: var(--primary);">lightbulb</i> التخصصات الجامعية المقترحة:</h2>
+                <div id="major-suggestions">
+                    <!-- Major suggestions will be displayed here by JavaScript -->
+                </div>
+                <button id="start-over-btn">إعادة البدء</button>
+            </div>
+
+            <div id="loading-spinner" class="spinner" style="display: none;"></div>
+        </div>
+    </div>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
