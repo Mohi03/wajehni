@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             // Step 1: Send specialty to your Python backend to get questions
-            const response = await fetch('https://wojhati.onrender.com/', { 
+            const response = await fetch('http://localhost:5001/', { 
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             // Step 2: Send questions and answers to your Python backend
-            const response = await fetch('https://wojhati.onrender.com/', { 
+            const response = await fetch('http://localhost:5001/', { 
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -190,4 +190,72 @@ document.addEventListener('DOMContentLoaded', () => {
         getQuestionsBtn.disabled = false;
         submitAnswersBtn.disabled = false;
     }
+}); 
+
+// === Support Section Interactivity ===
+
+// Wait for DOMContentLoaded as before
+
+document.addEventListener('DOMContentLoaded', () => {
+    // --- Support Section: Copy Email to Clipboard ---
+    // Add a toast/snackbar element if not present
+    let toast = document.getElementById('custom-toast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'custom-toast';
+        toast.style.position = 'fixed';
+        toast.style.bottom = '32px';
+        toast.style.right = '32px';
+        toast.style.background = 'var(--primary, #22C55E)';
+        toast.style.color = 'white';
+        toast.style.padding = '14px 28px';
+        toast.style.borderRadius = '10px';
+        toast.style.fontSize = '1em';
+        toast.style.fontWeight = 'bold';
+        toast.style.boxShadow = '0 2px 8px rgba(34,197,94,0.15)';
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.3s';
+        toast.style.zIndex = '9999';
+        document.body.appendChild(toast);
+    }
+    function showToast(msg) {
+        toast.textContent = msg;
+        toast.style.opacity = '1';
+        setTimeout(() => {
+            toast.style.opacity = '0';
+        }, 1800);
+    }
+
+    // Find the email span in the support card
+    const supportCard = document.querySelector('.support-card');
+    if (supportCard) {
+        const emailSpan = Array.from(supportCard.querySelectorAll('span')).find(
+            el => el.textContent && el.textContent.includes('ONJPA57@gmail.com')
+        );
+        if (emailSpan) {
+            emailSpan.style.cursor = 'pointer';
+            emailSpan.title = 'انسخ البريد الإلكتروني';
+            emailSpan.addEventListener('click', () => {
+                navigator.clipboard.writeText('ONJPA57@gmail.com').then(() => {
+                    showToast('تم النسخ');
+                });
+            });
+        }
+    }
+
+    // --- Social Links: Visual Feedback on Click ---
+    const socialLinks = supportCard ? supportCard.querySelectorAll('a') : [];
+    socialLinks.forEach(link => {
+        link.addEventListener('mousedown', () => {
+            link.style.background = 'rgba(34,197,94,0.10)';
+        });
+        link.addEventListener('mouseup', () => {
+            setTimeout(() => {
+                link.style.background = '';
+            }, 150);
+        });
+        link.addEventListener('mouseleave', () => {
+            link.style.background = '';
+        });
+    });
 }); 
