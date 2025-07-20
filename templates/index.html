@@ -3,94 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>وجهني</title>
+    <title>وجهني - مستشار التخصصات الجامعية</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <!-- Material Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
     <div class="container">
-        <!-- App Header -->
-        <div class="card">
-            <span class="card-title"><i class="material-icons">school</i>وجهني</span>
-            <p style="font-size: 1.1em; color: #059669; margin-bottom: 0;">تطبيق لتحديد التخصصات المناسبة لك</p>
-        </div>
-
-        <!-- App Info Card -->
-        <div class="info-card">
-            <span class="card-title"><i class="material-icons">info</i>معلومات التطبيق</span>
-            <p style="margin-bottom: 8px; color: #666;">الإصدار: 1.0.0</p>
-            <p style="font-size: 1em; color: #444;">تطبيق وجهني يساعدك في اختيار التخصص الجامعي المناسب لك بناءً على إجاباتك على مجموعة من الأسئلة المخصصة لكل تخصص. هذا التطبيق إصدار تجريبي وقد يحتوي على بعض الأخطاء أو المشاكل. نرحب بأي ملاحظات أو اقتراحات لتحسين التجربة.</p>
-        </div>
-
-        <!-- Instructions Card -->
-        <div class="instructions-card">
-            <span class="card-title"><i class="material-icons">help_outline</i>كيفية الاستخدام</span>
-            <ol style="padding-right: 20px; color: #333;">
-                <li>اختر شعبتك</li>
-                <li>أجب على الأسئلة بصدق ودقة</li>
-                <li>احصل على التوصيات المناسبة</li>
-            </ol>
-        </div>
-
-        <!-- Support Card -->
-        <div class="support-card">
-            <span class="card-title"><i class="material-icons">support_agent</i>الدعم الفني</span>
-            <ul style="list-style: none; padding: 0; margin: 0;">
-                <li style="margin-bottom: 10px; display: flex; align-items: center;">
-                    <i class="material-icons" style="color: var(--primary); margin-left: 8px;">email</i>
-                    <span style="font-weight: 600; color: #222;">البريد الإلكتروني:</span>
-                    <span style="margin-right: 6px; color: #059669;">ONJPA57@gmail.com</span>
-                </li>
-                <li style="margin-bottom: 10px; display: flex; align-items: center;">
-                    <i class="material-icons" style="color: #e1306c; margin-left: 8px;">camera_alt</i>
-                    <span style="font-weight: 600; color: #222;">إنستغرام:</span>
-                    <a href="https://www.instagram.com/on.youths57?igsh=MzlleWs4cTBtODAw" target="_blank" style="color: #e1306c; margin-right: 6px; text-decoration: underline;">@on.youths57</a>
-                </li>
-                <li style="margin-bottom: 10px; display: flex; align-items: center;">
-                    <i class="material-icons" style="color: #1877f3; margin-left: 8px;">facebook</i>
-                    <span style="font-weight: 600; color: #222;">فيسبوك:</span>
-                    <a href="https://www.facebook.com/share/1GFE5AQ6CN/" target="_blank" style="color: #1877f3; margin-right: 6px; text-decoration: underline;">صفحة الفيسبوك</a>
-                </li>
-                <li style="display: flex; align-items: center;">
-                    <i class="material-icons" style="color: var(--primary); margin-left: 8px;">assignment</i>
-                    <span style="font-weight: 600; color: #222;">نموذج التسجيل:</span>
-                    <a href="https://forms.gle/G76ABDGG2Pms1M7b6" target="_blank" style="color: var(--primary); margin-right: 6px; text-decoration: underline;">رابط الالتحاق</a>
-                </li>
-            </ul>
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <div class="hero-content">
+                <div class="hero-icon">
+                    <i class="material-icons">school</i>
+                </div>
+                <h1>وجهني</h1>
+                <p class="hero-subtitle">مستشار التخصصات الجامعية الذكي</p>
+                <p class="hero-description">اختر التخصص الجامعي المناسب لك بناءً على إجاباتك على مجموعة من الأسئلة المخصصة لكل تخصص</p>
+                <button id="start-app-btn" class="cta-button">
+                    <i class="material-icons">play_arrow</i>
+                    ابدأ الآن
+                </button>
+            </div>
         </div>
 
         <!-- Features Section -->
-        <div class="card">
-            <span class="card-title"><i class="material-icons">star</i>المميزات</span>
+        <div class="features-section">
+            <h2 class="section-title">
+                <i class="material-icons">star</i>
+                مميزات التطبيق
+            </h2>
             <div class="feature-grid">
                 <div class="feature-item">
                     <i class="material-icons">quiz</i>
                     <div class="feature-title">الاختبارات المخصصة</div>
-                    <div class="feature-desc">أسئلة لكل تخصص</div>
+                    <div class="feature-desc">أسئلة مخصصة لكل تخصص دراسي</div>
                 </div>
                 <div class="feature-item">
                     <i class="material-icons">lightbulb</i>
                     <div class="feature-title">الاقتراحات الذكية</div>
-                    <div class="feature-desc">الاقتراحات بناءً على الإجابات</div>
+                    <div class="feature-desc">توصيات ذكية بناءً على إجاباتك</div>
                 </div>
                 <div class="feature-item">
                     <i class="material-icons">touch_app</i>
                     <div class="feature-title">واجهة مبسطة</div>
-                    <div class="feature-desc">تصميم بسيط وسهل</div>
+                    <div class="feature-desc">تصميم بسيط وسهل الاستخدام</div>
                 </div>
                 <div class="feature-item">
                     <i class="material-icons">update</i>
                     <div class="feature-title">تحديثات مستمرة</div>
-                    <div class="feature-desc">التحسينات القادمة</div>
+                    <div class="feature-desc">تحسينات وتحديثات دورية</div>
                 </div>
             </div>
         </div>
 
-        <!-- Main App Flow: Specialty Selection, Questions, Suggestions -->
-        <div class="card">
+        <!-- How It Works Section -->
+        <div class="how-it-works-section">
+            <h2 class="section-title">
+                <i class="material-icons">help_outline</i>
+                كيف يعمل التطبيق
+            </h2>
+            <div class="steps-container">
+                <div class="step-item">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>اختر شعبتك</h3>
+                        <p>اختر التخصص الذي تدرسه في المرحلة الثانوية</p>
+                    </div>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>أجب على الأسئلة</h3>
+                        <p>أجب بصدق ودقة على الأسئلة المخصصة</p>
+                    </div>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>احصل على التوصيات</h3>
+                        <p>احصل على التخصصات الجامعية المناسبة لك</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Support Section -->
+        <div class="support-section">
+            <h2 class="section-title">
+                <i class="material-icons">support_agent</i>
+                الدعم الفني
+            </h2>
+            <div class="support-grid">
+                <div class="support-item">
+                    <i class="material-icons">email</i>
+                    <h3>البريد الإلكتروني</h3>
+                    <p id="email-contact">ONJPA57@gmail.com</p>
+                </div>
+                <div class="support-item">
+                    <i class="material-icons">camera_alt</i>
+                    <h3>إنستغرام</h3>
+                    <a href="https://www.instagram.com/on.youths57?igsh=MzlleWs4cTBtODAw" target="_blank">@on.youths57</a>
+                </div>
+                <div class="support-item">
+                    <i class="material-icons">facebook</i>
+                    <h3>فيسبوك</h3>
+                    <a href="https://www.facebook.com/share/1GFE5AQ6CN/" target="_blank">صفحة الفيسبوك</a>
+                </div>
+                <div class="support-item">
+                    <i class="material-icons">assignment</i>
+                    <h3>نموذج التسجيل</h3>
+                    <a href="https://forms.gle/G76ABDGG2Pms1M7b6" target="_blank">رابط الالتحاق</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- App Info Section -->
+        <div class="app-info-section">
+            <h2 class="section-title">
+                <i class="material-icons">info</i>
+                معلومات التطبيق
+            </h2>
+            <div class="app-info-content">
+                <div class="version-info">
+                    <span class="version-badge">الإصدار 1.0.0</span>
+                </div>
+                <p>تطبيق وجهني يساعدك في اختيار التخصص الجامعي المناسب لك بناءً على إجاباتك على مجموعة من الأسئلة المخصصة لكل تخصص. هذا التطبيق إصدار تجريبي وقد يحتوي على بعض الأخطاء أو المشاكل. نرحب بأي ملاحظات أو اقتراحات لتحسين التجربة.</p>
+            </div>
+        </div>
+
+        <!-- Main App Flow (Hidden by default) -->
+        <div id="main-app-section" class="main-app-section" style="display: none;">
+            <div class="app-header">
+                <button id="back-to-home-btn" class="back-button">
+                    <i class="material-icons">arrow_back</i>
+                    العودة للصفحة الرئيسية
+                </button>
+                <h2>ابدأ الاختبار</h2>
+            </div>
+
             <div id="specialty-selection">
-                <h2><i class="material-icons" style="vertical-align: middle; color: var(--primary);">category</i> اختر التخصص</h2>
+                <h3><i class="material-icons">category</i> اختر التخصص</h3>
                 <p>الرجاء اختيار تخصصك في المرحلة الثانوية:</p>
                 <select id="specialty-dropdown">
                     <option value="">--اختر--</option>
@@ -106,7 +158,7 @@
             </div>
 
             <div id="questions-section" style="display: none;">
-                <h2><i class="material-icons" style="vertical-align: middle; color: var(--primary);">quiz</i> أجب عن الأسئلة التالية:</h2>
+                <h3><i class="material-icons">quiz</i> أجب عن الأسئلة التالية:</h3>
                 <form id="questions-form">
                     <!-- Questions will be dynamically loaded here by JavaScript -->
                 </form>
@@ -115,7 +167,7 @@
             </div>
 
             <div id="suggestions-section" style="display: none;">
-                <h2><i class="material-icons" style="vertical-align: middle; color: var(--primary);">lightbulb</i> التخصصات الجامعية المقترحة:</h2>
+                <h3><i class="material-icons">lightbulb</i> التخصصات الجامعية المقترحة:</h3>
                 <div id="major-suggestions">
                     <!-- Major suggestions will be displayed here by JavaScript -->
                 </div>
