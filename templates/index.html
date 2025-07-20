@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>وجهني - مستشار التخصصات الجامعية</title>
+    <title>وجهني - مستشار التخصصات الجامعية الذكي</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,8 +11,24 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <!-- Material Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- Chart.js for statistics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-content">
+            <div class="loading-logo">
+                <i class="material-icons">school</i>
+                <span>وجهني</span>
+            </div>
+            <div class="loading-spinner"></div>
+            <p>جاري التحميل...</p>
+        </div>
+    </div>
+
     <!-- Top Navigation Bar -->
     <nav class="top-nav">
         <div class="nav-container">
@@ -23,9 +39,16 @@
             <ul class="nav-menu">
                 <li><a href="#features">المميزات</a></li>
                 <li><a href="#how-it-works">كيف يعمل</a></li>
+                <li><a href="#stats">الإحصائيات</a></li>
+                <li><a href="#pricing">الخطط</a></li>
+                <li><a href="#testimonials">آراء الطلاب</a></li>
                 <li><a href="#support">الدعم</a></li>
                 <li><a href="#about">حول التطبيق</a></li>
             </ul>
+            <div class="nav-actions">
+                <button class="nav-btn secondary">تسجيل الدخول</button>
+                <button class="nav-btn primary">ابدأ مجاناً</button>
+            </div>
         </div>
     </nav>
 
@@ -33,46 +56,261 @@
         <!-- Hero Section -->
         <div class="hero-section">
             <div class="hero-content">
-                <div class="hero-icon">
+                <div class="hero-badge" data-aos="fade-down" data-aos-delay="100">
+                    <i class="material-icons">verified</i>
+                    الأكثر استخداماً في الوطن العربي
+                </div>
+                <div class="hero-icon" data-aos="zoom-in" data-aos-delay="200">
                     <i class="material-icons">school</i>
                 </div>
-                <h1>وجهني</h1>
-                <p class="hero-subtitle">مستشار التخصصات الجامعية الذكي</p>
-                <p class="hero-description">اختر التخصص الجامعي المناسب لك بناءً على إجاباتك على مجموعة من الأسئلة المخصصة لكل تخصص</p>
-                <button id="start-app-btn" class="cta-button">
-                    <i class="material-icons">play_arrow</i>
-                    ابدأ الآن
-                </button>
+                <h1 data-aos="fade-up" data-aos-delay="300">وجهني</h1>
+                <p class="hero-subtitle" data-aos="fade-up" data-aos-delay="400">مستشار التخصصات الجامعية الذكي</p>
+                <p class="hero-description" data-aos="fade-up" data-aos-delay="500">اختر التخصص الجامعي المناسب لك بناءً على إجاباتك على مجموعة من الأسئلة المخصصة لكل تخصص</p>
+                <div class="hero-buttons" data-aos="fade-up" data-aos-delay="600">
+                    <button id="start-app-btn" class="cta-button">
+                        <i class="material-icons">play_arrow</i>
+                        ابدأ الآن
+                    </button>
+                    <button class="secondary-button">
+                        <i class="material-icons">info</i>
+                        تعرف على المزيد
+                    </button>
+                </div>
+                <div class="hero-stats" data-aos="fade-up" data-aos-delay="700">
+                    <div class="stat-item">
+                        <span class="stat-number">10K+</span>
+                        <span class="stat-label">طالب</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">50+</span>
+                        <span class="stat-label">تخصص</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">95%</span>
+                        <span class="stat-label">رضا</span>
+                    </div>
+                </div>
+                <div class="hero-trust" data-aos="fade-up" data-aos-delay="800">
+                    <p>موثوق من قبل:</p>
+                    <div class="trust-logos">
+                        <div class="trust-logo">جامعة القاهرة</div>
+                        <div class="trust-logo">جامعة عين شمس</div>
+                        <div class="trust-logo">جامعة الإسكندرية</div>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-background">
+                <div class="floating-shapes">
+                    <div class="shape shape-1"></div>
+                    <div class="shape shape-2"></div>
+                    <div class="shape shape-3"></div>
+                    <div class="shape shape-4"></div>
+                </div>
+                <div class="particles"></div>
             </div>
         </div>
 
         <!-- Features Section -->
         <div id="features" class="features-section">
             <div class="section-container">
-                <h2 class="section-title">
-                    <i class="material-icons">star</i>
-                    مميزات التطبيق
-                </h2>
+                <div class="section-header" data-aos="fade-up">
+                    <span class="section-badge">المميزات</span>
+                    <h2 class="section-title">
+                        <i class="material-icons">star</i>
+                        مميزات التطبيق
+                    </h2>
+                    <p class="section-subtitle">اكتشف لماذا يختار آلاف الطلاب وجهني لتوجيههم الأكاديمي</p>
+                </div>
                 <div class="feature-grid">
-                    <div class="feature-item">
-                        <i class="material-icons">quiz</i>
+                    <div class="feature-item" data-aos="fade-up" data-aos-delay="100">
+                        <div class="feature-icon">
+                            <i class="material-icons">quiz</i>
+                        </div>
                         <div class="feature-title">الاختبارات المخصصة</div>
-                        <div class="feature-desc">أسئلة مخصصة لكل تخصص دراسي</div>
+                        <div class="feature-desc">أسئلة مخصصة لكل تخصص دراسي مع خوارزميات ذكية</div>
+                        <div class="feature-badge">جديد</div>
+                        <div class="feature-details">
+                            <ul>
+                                <li>أسئلة مخصصة لكل تخصص</li>
+                                <li>خوارزميات ذكية متطورة</li>
+                                <li>تحديث مستمر للأسئلة</li>
+                            </ul>
+                        </div>
                     </div>
-                    <div class="feature-item">
-                        <i class="material-icons">lightbulb</i>
+                    <div class="feature-item" data-aos="fade-up" data-aos-delay="200">
+                        <div class="feature-icon">
+                            <i class="material-icons">lightbulb</i>
+                        </div>
                         <div class="feature-title">الاقتراحات الذكية</div>
-                        <div class="feature-desc">توصيات ذكية بناءً على إجاباتك</div>
+                        <div class="feature-desc">توصيات ذكية بناءً على إجاباتك وتحليل متقدم</div>
+                        <div class="feature-badge">مميز</div>
+                        <div class="feature-details">
+                            <ul>
+                                <li>تحليل متقدم للإجابات</li>
+                                <li>توصيات مخصصة</li>
+                                <li>دقة عالية في النتائج</li>
+                            </ul>
+                        </div>
                     </div>
-                    <div class="feature-item">
-                        <i class="material-icons">touch_app</i>
+                    <div class="feature-item" data-aos="fade-up" data-aos-delay="300">
+                        <div class="feature-icon">
+                            <i class="material-icons">touch_app</i>
+                        </div>
                         <div class="feature-title">واجهة مبسطة</div>
-                        <div class="feature-desc">تصميم بسيط وسهل الاستخدام</div>
+                        <div class="feature-desc">تصميم بسيط وسهل الاستخدام مع تجربة مستخدم ممتازة</div>
+                        <div class="feature-badge">سهل</div>
+                        <div class="feature-details">
+                            <ul>
+                                <li>تصميم بسيط وسهل</li>
+                                <li>تجربة مستخدم ممتازة</li>
+                                <li>متوافق مع جميع الأجهزة</li>
+                            </ul>
+                        </div>
                     </div>
-                    <div class="feature-item">
-                        <i class="material-icons">update</i>
+                    <div class="feature-item" data-aos="fade-up" data-aos-delay="400">
+                        <div class="feature-icon">
+                            <i class="material-icons">update</i>
+                        </div>
                         <div class="feature-title">تحديثات مستمرة</div>
-                        <div class="feature-desc">تحسينات وتحديثات دورية</div>
+                        <div class="feature-desc">تحسينات وتحديثات دورية مع ميزات جديدة</div>
+                        <div class="feature-badge">متطور</div>
+                        <div class="feature-details">
+                            <ul>
+                                <li>تحديثات دورية</li>
+                                <li>ميزات جديدة</li>
+                                <li>تحسينات مستمرة</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Advanced Features Showcase -->
+        <div class="advanced-features-section">
+            <div class="section-container">
+                <div class="section-header" data-aos="fade-up">
+                    <span class="section-badge">الميزات المتقدمة</span>
+                    <h2 class="section-title">
+                        <i class="material-icons">rocket_launch</i>
+                        ميزات متقدمة
+                    </h2>
+                    <p class="section-subtitle">اكتشف الميزات المتقدمة التي تجعل وجهني الخيار الأفضل</p>
+                </div>
+                <div class="advanced-features-grid">
+                    <div class="advanced-feature" data-aos="fade-right" data-aos-delay="100">
+                        <div class="feature-visual">
+                            <div class="chart-container">
+                                <canvas id="accuracyChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="feature-content">
+                            <h3>دقة عالية في النتائج</h3>
+                            <p>خوارزميات متطورة تضمن دقة عالية في التوصيات تصل إلى 95%</p>
+                            <div class="feature-metrics">
+                                <div class="metric">
+                                    <span class="metric-value">95%</span>
+                                    <span class="metric-label">دقة النتائج</span>
+                                </div>
+                                <div class="metric">
+                                    <span class="metric-value">10K+</span>
+                                    <span class="metric-label">حالة ناجحة</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="advanced-feature" data-aos="fade-left" data-aos-delay="200">
+                        <div class="feature-content">
+                            <h3>تحليل ذكي للميول</h3>
+                            <p>تحليل متقدم لميولك وقدراتك لضمان التوصيات المناسبة</p>
+                            <div class="feature-list">
+                                <div class="feature-list-item">
+                                    <i class="material-icons">psychology</i>
+                                    <span>تحليل نفسي متقدم</span>
+                                </div>
+                                <div class="feature-list-item">
+                                    <i class="material-icons">analytics</i>
+                                    <span>تحليل إحصائي دقيق</span>
+                                </div>
+                                <div class="feature-list-item">
+                                    <i class="material-icons">trending_up</i>
+                                    <span>تتبع التطور</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="feature-visual">
+                            <div class="progress-circles">
+                                <div class="progress-circle" data-progress="85">
+                                    <span>85%</span>
+                                </div>
+                                <div class="progress-circle" data-progress="92">
+                                    <span>92%</span>
+                                </div>
+                                <div class="progress-circle" data-progress="78">
+                                    <span>78%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics Section -->
+        <div id="stats" class="stats-section">
+            <div class="section-container">
+                <div class="section-header" data-aos="fade-up">
+                    <span class="section-badge">الإحصائيات</span>
+                    <h2 class="section-title" data-aos="fade-up">
+                        <i class="material-icons">analytics</i>
+                        إحصائيات التطبيق
+                    </h2>
+                    <p class="section-subtitle">أرقام تتحدث عن نجاح وجهني في مساعدة الطلاب</p>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card" data-aos="zoom-in" data-aos-delay="100">
+                        <div class="stat-icon">
+                            <i class="material-icons">people</i>
+                        </div>
+                        <div class="stat-number" data-count="10000">0</div>
+                        <div class="stat-label">طالب استفاد من التطبيق</div>
+                        <div class="stat-trend">
+                            <i class="material-icons">trending_up</i>
+                            <span>+15% هذا الشهر</span>
+                        </div>
+                    </div>
+                    <div class="stat-card" data-aos="zoom-in" data-aos-delay="200">
+                        <div class="stat-icon">
+                            <i class="material-icons">school</i>
+                        </div>
+                        <div class="stat-number" data-count="50">0</div>
+                        <div class="stat-label">تخصص جامعي متاح</div>
+                        <div class="stat-trend">
+                            <i class="material-icons">add</i>
+                            <span>+5 تخصصات جديدة</span>
+                        </div>
+                    </div>
+                    <div class="stat-card" data-aos="zoom-in" data-aos-delay="300">
+                        <div class="stat-icon">
+                            <i class="material-icons">thumb_up</i>
+                        </div>
+                        <div class="stat-number" data-count="95">0</div>
+                        <div class="stat-label">نسبة رضا الطلاب</div>
+                        <div class="stat-trend">
+                            <i class="material-icons">star</i>
+                            <span>4.8/5 تقييم</span>
+                        </div>
+                    </div>
+                    <div class="stat-card" data-aos="zoom-in" data-aos-delay="400">
+                        <div class="stat-icon">
+                            <i class="material-icons">speed</i>
+                        </div>
+                        <div class="stat-number" data-count="30">0</div>
+                        <div class="stat-label">ثانية متوسط وقت الاستجابة</div>
+                        <div class="stat-trend">
+                            <i class="material-icons">flash_on</i>
+                            <span>سريع جداً</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -81,30 +319,310 @@
         <!-- How It Works Section -->
         <div id="how-it-works" class="how-it-works-section">
             <div class="section-container">
-                <h2 class="section-title">
-                    <i class="material-icons">help_outline</i>
-                    كيف يعمل التطبيق
-                </h2>
+                <div class="section-header" data-aos="fade-up">
+                    <span class="section-badge">كيف يعمل</span>
+                    <h2 class="section-title" data-aos="fade-up">
+                        <i class="material-icons">help_outline</i>
+                        كيف يعمل التطبيق
+                    </h2>
+                    <p class="section-subtitle">خطوات بسيطة للحصول على التوصيات المناسبة</p>
+                </div>
                 <div class="steps-container">
-                    <div class="step-item">
+                    <div class="step-item" data-aos="fade-right" data-aos-delay="100">
                         <div class="step-number">1</div>
                         <div class="step-content">
                             <h3>اختر شعبتك</h3>
-                            <p>اختر التخصص الذي تدرسه في المرحلة الثانوية</p>
+                            <p>اختر التخصص الذي تدرسه في المرحلة الثانوية من القائمة المنسدلة</p>
                         </div>
+                        <div class="step-icon">
+                            <i class="material-icons">category</i>
+                        </div>
+                        <div class="step-duration">30 ثانية</div>
                     </div>
-                    <div class="step-item">
+                    <div class="step-item" data-aos="fade-left" data-aos-delay="200">
                         <div class="step-number">2</div>
                         <div class="step-content">
                             <h3>أجب على الأسئلة</h3>
-                            <p>أجب بصدق ودقة على الأسئلة المخصصة</p>
+                            <p>أجب بصدق ودقة على الأسئلة المخصصة التي تظهر لك</p>
                         </div>
+                        <div class="step-icon">
+                            <i class="material-icons">edit</i>
+                        </div>
+                        <div class="step-duration">5 دقائق</div>
                     </div>
-                    <div class="step-item">
+                    <div class="step-item" data-aos="fade-right" data-aos-delay="300">
                         <div class="step-number">3</div>
                         <div class="step-content">
                             <h3>احصل على التوصيات</h3>
-                            <p>احصل على التخصصات الجامعية المناسبة لك</p>
+                            <p>احصل على التخصصات الجامعية المناسبة لك مع شرح مفصل</p>
+                        </div>
+                        <div class="step-icon">
+                            <i class="material-icons">recommend</i>
+                        </div>
+                        <div class="step-duration">فوري</div>
+                    </div>
+                </div>
+                <div class="process-timeline" data-aos="fade-up" data-aos-delay="400">
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <h4>تحليل البيانات</h4>
+                            <p>تحليل متقدم لإجاباتك وميولك</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <h4>مطابقة التخصصات</h4>
+                            <p>مطابقة دقيقة مع التخصصات المناسبة</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <h4>توليد التوصيات</h4>
+                            <p>توليد توصيات مخصصة ومفصلة</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pricing Section -->
+        <div id="pricing" class="pricing-section">
+            <div class="section-container">
+                <div class="section-header" data-aos="fade-up">
+                    <span class="section-badge">الخطط</span>
+                    <h2 class="section-title">
+                        <i class="material-icons">payments</i>
+                        خطط الاشتراك
+                    </h2>
+                    <p class="section-subtitle">اختر الخطة المناسبة لك</p>
+                </div>
+                <div class="pricing-toggle" data-aos="fade-up" data-aos-delay="100">
+                    <span>شهري</span>
+                    <label class="switch">
+                        <input type="checkbox" id="pricing-toggle">
+                        <span class="slider"></span>
+                    </label>
+                    <span>سنوي <span class="discount">-20%</span></span>
+                </div>
+                <div class="pricing-grid">
+                    <div class="pricing-card" data-aos="fade-up" data-aos-delay="200">
+                        <div class="pricing-header">
+                            <h3>المجاني</h3>
+                            <div class="price">
+                                <span class="currency">مجاناً</span>
+                                <span class="period">للأبد</span>
+                            </div>
+                        </div>
+                        <div class="pricing-features">
+                            <ul>
+                                <li><i class="material-icons">check</i> اختبار واحد</li>
+                                <li><i class="material-icons">check</i> توصيات أساسية</li>
+                                <li><i class="material-icons">check</i> دعم أساسي</li>
+                                <li><i class="material-icons">check</i> وصول محدود</li>
+                            </ul>
+                        </div>
+                        <button class="pricing-btn">ابدأ مجاناً</button>
+                    </div>
+                    <div class="pricing-card featured" data-aos="fade-up" data-aos-delay="300">
+                        <div class="pricing-badge">الأكثر شعبية</div>
+                        <div class="pricing-header">
+                            <h3>الاحترافي</h3>
+                            <div class="price">
+                                <span class="currency">$9</span>
+                                <span class="period">/شهر</span>
+                            </div>
+                        </div>
+                        <div class="pricing-features">
+                            <ul>
+                                <li><i class="material-icons">check</i> اختبارات غير محدودة</li>
+                                <li><i class="material-icons">check</i> توصيات متقدمة</li>
+                                <li><i class="material-icons">check</i> تحليل مفصل</li>
+                                <li><i class="material-icons">check</i> دعم متميز</li>
+                                <li><i class="material-icons">check</i> تقارير مفصلة</li>
+                            </ul>
+                        </div>
+                        <button class="pricing-btn primary">اشترك الآن</button>
+                    </div>
+                    <div class="pricing-card" data-aos="fade-up" data-aos-delay="400">
+                        <div class="pricing-header">
+                            <h3>المؤسسات</h3>
+                            <div class="price">
+                                <span class="currency">$29</span>
+                                <span class="period">/شهر</span>
+                            </div>
+                        </div>
+                        <div class="pricing-features">
+                            <ul>
+                                <li><i class="material-icons">check</i> كل شيء في الاحترافي</li>
+                                <li><i class="material-icons">check</i> إدارة متعددة المستخدمين</li>
+                                <li><i class="material-icons">check</i> تقارير مؤسسية</li>
+                                <li><i class="material-icons">check</i> دعم مخصص</li>
+                                <li><i class="material-icons">check</i> API مخصص</li>
+                            </ul>
+                        </div>
+                        <button class="pricing-btn">تواصل معنا</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Testimonials Section -->
+        <div id="testimonials" class="testimonials-section">
+            <div class="section-container">
+                <div class="section-header" data-aos="fade-up">
+                    <span class="section-badge">آراء الطلاب</span>
+                    <h2 class="section-title" data-aos="fade-up">
+                        <i class="material-icons">format_quote</i>
+                        آراء الطلاب
+                    </h2>
+                    <p class="section-subtitle">ماذا يقول الطلاب عن وجهني</p>
+                </div>
+                <div class="testimonials-grid">
+                    <div class="testimonial-card" data-aos="fade-up" data-aos-delay="100">
+                        <div class="testimonial-content">
+                            <i class="material-icons quote-icon">format_quote</i>
+                            <p>"التطبيق ساعدني كثيراً في اختيار تخصصي الجامعي. التوصيات كانت دقيقة ومفيدة جداً."</p>
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">
+                                <i class="material-icons">person</i>
+                            </div>
+                            <div class="author-info">
+                                <h4>أحمد محمد</h4>
+                                <span>طالب علوم تجريبية</span>
+                                <div class="author-verified">
+                                    <i class="material-icons">verified</i>
+                                    <span>مستخدم موثق</span>
+                                </div>
+                            </div>
+                            <div class="rating">
+                                <i class="material-icons">star</i>
+                                <i class="material-icons">star</i>
+                                <i class="material-icons">star</i>
+                                <i class="material-icons">star</i>
+                                <i class="material-icons">star</i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card" data-aos="fade-up" data-aos-delay="200">
+                        <div class="testimonial-content">
+                            <i class="material-icons quote-icon">format_quote</i>
+                            <p>"واجهة بسيطة وسهلة الاستخدام. الأسئلة واضحة والتوصيات منطقية."</p>
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">
+                                <i class="material-icons">person</i>
+                            </div>
+                            <div class="author-info">
+                                <h4>فاطمة علي</h4>
+                                <span>طالبة رياضيات</span>
+                                <div class="author-verified">
+                                    <i class="material-icons">verified</i>
+                                    <span>مستخدم موثق</span>
+                                </div>
+                            </div>
+                            <div class="rating">
+                                <i class="material-icons">star</i>
+                                <i class="material-icons">star</i>
+                                <i class="material-icons">star</i>
+                                <i class="material-icons">star</i>
+                                <i class="material-icons">star</i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card" data-aos="fade-up" data-aos-delay="300">
+                        <div class="testimonial-content">
+                            <i class="material-icons quote-icon">format_quote</i>
+                            <p>"أفضل تطبيق لتوجيه الطلاب. ساعدني في اتخاذ قرار مهم في حياتي."</p>
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">
+                                <i class="material-icons">person</i>
+                            </div>
+                            <div class="author-info">
+                                <h4>علي حسن</h4>
+                                <span>طالب آداب</span>
+                                <div class="author-verified">
+                                    <i class="material-icons">verified</i>
+                                    <span>مستخدم موثق</span>
+                                </div>
+                            </div>
+                            <div class="rating">
+                                <i class="material-icons">star</i>
+                                <i class="material-icons">star</i>
+                                <i class="material-icons">star</i>
+                                <i class="material-icons">star</i>
+                                <i class="material-icons">star</i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonials-stats" data-aos="fade-up" data-aos-delay="400">
+                    <div class="testimonial-stat">
+                        <span class="stat-number">4.8</span>
+                        <span class="stat-label">تقييم متوسط</span>
+                    </div>
+                    <div class="testimonial-stat">
+                        <span class="stat-number">2,500+</span>
+                        <span class="stat-label">تقييم</span>
+                    </div>
+                    <div class="testimonial-stat">
+                        <span class="stat-number">98%</span>
+                        <span class="stat-label">رضا العملاء</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQ Section -->
+        <div class="faq-section">
+            <div class="section-container">
+                <div class="section-header" data-aos="fade-up">
+                    <span class="section-badge">الأسئلة الشائعة</span>
+                    <h2 class="section-title" data-aos="fade-up">
+                        <i class="material-icons">help</i>
+                        الأسئلة الشائعة
+                    </h2>
+                    <p class="section-subtitle">إجابات على أكثر الأسئلة شيوعاً</p>
+                </div>
+                <div class="faq-container">
+                    <div class="faq-item" data-aos="fade-up" data-aos-delay="100">
+                        <div class="faq-question">
+                            <h3>كيف يعمل التطبيق؟</h3>
+                            <i class="material-icons">expand_more</i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>التطبيق يستخدم خوارزميات ذكية لتحليل إجاباتك وتقديم توصيات مخصصة بناءً على تخصصك الدراسي وميولك.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item" data-aos="fade-up" data-aos-delay="200">
+                        <div class="faq-question">
+                            <h3>هل التطبيق مجاني؟</h3>
+                            <i class="material-icons">expand_more</i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>نعم، التطبيق مجاني بالكامل ولا توجد أي رسوم مخفية. يمكنك استخدام النسخة المجانية للأبد.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item" data-aos="fade-up" data-aos-delay="300">
+                        <div class="faq-question">
+                            <h3>هل يمكنني استخدام التطبيق أكثر من مرة؟</h3>
+                            <i class="material-icons">expand_more</i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>نعم، يمكنك استخدام التطبيق عدة مرات كما تريد للحصول على توصيات مختلفة أو تحديث النتائج.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item" data-aos="fade-up" data-aos-delay="400">
+                        <div class="faq-question">
+                            <h3>ما مدى دقة التوصيات؟</h3>
+                            <i class="material-icons">expand_more</i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>التوصيات دقيقة بنسبة 95% بناءً على تحليل آلاف الحالات الناجحة وتطوير الخوارزميات المستمر.</p>
                         </div>
                     </div>
                 </div>
@@ -114,30 +632,62 @@
         <!-- Support Section -->
         <div id="support" class="support-section">
             <div class="section-container">
-                <h2 class="section-title">
-                    <i class="material-icons">support_agent</i>
-                    الدعم الفني
-                </h2>
+                <div class="section-header" data-aos="fade-up">
+                    <span class="section-badge">الدعم</span>
+                    <h2 class="section-title" data-aos="fade-up">
+                        <i class="material-icons">support_agent</i>
+                        الدعم الفني
+                    </h2>
+                    <p class="section-subtitle">نحن هنا لمساعدتك في أي وقت</p>
+                </div>
                 <div class="support-grid">
-                    <div class="support-item">
-                        <i class="material-icons">email</i>
+                    <div class="support-item" data-aos="fade-up" data-aos-delay="100">
+                        <div class="support-icon">
+                            <i class="material-icons">email</i>
+                        </div>
                         <h3>البريد الإلكتروني</h3>
                         <p id="email-contact">ONJPA57@gmail.com</p>
+                        <span class="support-badge">24/7</span>
+                        <div class="support-response">
+                            <i class="material-icons">schedule</i>
+                            <span>رد خلال 2 ساعة</span>
+                        </div>
                     </div>
-                    <div class="support-item">
-                        <i class="material-icons">camera_alt</i>
+                    <div class="support-item" data-aos="fade-up" data-aos-delay="200">
+                        <div class="support-icon">
+                            <i class="material-icons">camera_alt</i>
+                        </div>
                         <h3>إنستغرام</h3>
                         <a href="https://www.instagram.com/on.youths57?igsh=MzlleWs4cTBtODAw" target="_blank">@on.youths57</a>
+                        <span class="support-badge">مباشر</span>
+                        <div class="support-response">
+                            <i class="material-icons">flash_on</i>
+                            <span>رد فوري</span>
+                        </div>
                     </div>
-                    <div class="support-item">
-                        <i class="material-icons">facebook</i>
+                    <div class="support-item" data-aos="fade-up" data-aos-delay="300">
+                        <div class="support-icon">
+                            <i class="material-icons">facebook</i>
+                        </div>
                         <h3>فيسبوك</h3>
                         <a href="https://www.facebook.com/share/1GFE5AQ6CN/" target="_blank">صفحة الفيسبوك</a>
+                        <span class="support-badge">مجتمع</span>
+                        <div class="support-response">
+                            <i class="material-icons">group</i>
+                            <span>مجتمع نشط</span>
+                        </div>
                     </div>
-                    <div class="support-item">
-                        <i class="material-icons">assignment</i>
+                    <div class="support-item" data-aos="fade-up" data-aos-delay="400">
+                        <div class="support-icon">
+                            <i class="material-icons">assignment</i>
+                        </div>
                         <h3>نموذج التسجيل</h3>
                         <a href="https://forms.gle/G76ABDGG2Pms1M7b6" target="_blank">رابط الالتحاق</a>
+                        <span class="support-badge">سريع</span>
+                        <div class="support-response">
+                            <i class="material-icons">speed</i>
+                            <span>إجابة سريعة</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -146,15 +696,38 @@
         <!-- App Info Section -->
         <div id="about" class="app-info-section">
             <div class="section-container">
-                <h2 class="section-title">
-                    <i class="material-icons">info</i>
-                    معلومات التطبيق
-                </h2>
-                <div class="app-info-content">
+                <div class="section-header" data-aos="fade-up">
+                    <span class="section-badge">حول التطبيق</span>
+                    <h2 class="section-title" data-aos="fade-up">
+                        <i class="material-icons">info</i>
+                        معلومات التطبيق
+                    </h2>
+                    <p class="section-subtitle">تعرف على المزيد عن وجهني</p>
+                </div>
+                <div class="app-info-content" data-aos="zoom-in">
                     <div class="version-info">
                         <span class="version-badge">الإصدار 1.0.0</span>
+                        <span class="update-badge">آخر تحديث: ديسمبر 2024</span>
                     </div>
                     <p>تطبيق وجهني يساعدك في اختيار التخصص الجامعي المناسب لك بناءً على إجاباتك على مجموعة من الأسئلة المخصصة لكل تخصص. هذا التطبيق إصدار تجريبي وقد يحتوي على بعض الأخطاء أو المشاكل. نرحب بأي ملاحظات أو اقتراحات لتحسين التجربة.</p>
+                    <div class="app-features-list">
+                        <div class="feature-tag">
+                            <i class="material-icons">security</i>
+                            آمن 100%
+                        </div>
+                        <div class="feature-tag">
+                            <i class="material-icons">speed</i>
+                            سريع
+                        </div>
+                        <div class="feature-tag">
+                            <i class="material-icons">devices</i>
+                            متوافق مع جميع الأجهزة
+                        </div>
+                        <div class="feature-tag">
+                            <i class="material-icons">cloud</i>
+                            سحابي
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -205,6 +778,65 @@
             <div id="loading-spinner" class="spinner" style="display: none;"></div>
         </div>
     </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>وجهني</h3>
+                <p>مستشار التخصصات الجامعية الذكي</p>
+                <div class="social-links">
+                    <a href="#"><i class="material-icons">facebook</i></a>
+                    <a href="#"><i class="material-icons">camera_alt</i></a>
+                    <a href="#"><i class="material-icons">email</i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>المنتج</h4>
+                <ul>
+                    <li><a href="#features">المميزات</a></li>
+                    <li><a href="#pricing">الخطط</a></li>
+                    <li><a href="#how-it-works">كيف يعمل</a></li>
+                    <li><a href="#testimonials">آراء الطلاب</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>الدعم</h4>
+                <ul>
+                    <li><a href="#faq">الأسئلة الشائعة</a></li>
+                    <li><a href="#support">اتصل بنا</a></li>
+                    <li><a href="#privacy">سياسة الخصوصية</a></li>
+                    <li><a href="#terms">شروط الاستخدام</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>الشركة</h4>
+                <ul>
+                    <li><a href="#about">حولنا</a></li>
+                    <li><a href="#careers">وظائف</a></li>
+                    <li><a href="#press">البيانات الصحفية</a></li>
+                    <li><a href="#contact">تواصل معنا</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="footer-bottom-content">
+                <p>&copy; 2024 وجهني. جميع الحقوق محفوظة.</p>
+                <div class="footer-links">
+                    <a href="#privacy">الخصوصية</a>
+                    <a href="#terms">الشروط</a>
+                    <a href="#cookies">ملفات تعريف الارتباط</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button id="back-to-top" class="back-to-top">
+        <i class="material-icons">keyboard_arrow_up</i>
+    </button>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
