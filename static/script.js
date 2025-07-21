@@ -288,12 +288,13 @@ getQuestionsBtn.addEventListener('click', async () => {
         const data = await response.json();
         console.log('Parsed data:', data);
         
-        if (data.success) {
+        if (data.questions) {
             currentQuestions = Array.isArray(data.questions)
                 ? data.questions
                 : (typeof data.questions === 'string'
                     ? data.questions.split('\n').filter(q => q.trim() !== '')
                     : []);
+            console.log('currentQuestions:', currentQuestions);
             currentQuestionIndex = 0;
             userAnswers = {};
             displayCurrentQuestion();
