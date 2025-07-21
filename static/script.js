@@ -1,9 +1,10 @@
 // Initialize AOS animations
 AOS.init({
-    duration: 800,
-    easing: 'ease-in-out',
+    duration: 600,
+    easing: 'ease-out',
     once: true,
-    offset: 100
+    offset: 50,
+    delay: 0
 });
 
 // Loading Screen
@@ -13,18 +14,16 @@ window.addEventListener('load', function() {
         loadingScreen.classList.add('hidden');
         setTimeout(() => {
             loadingScreen.style.display = 'none';
-        }, 500);
-    }, 1500);
+        }, 300);
+    }, 800);
 });
 
 // DOM Elements
 const startAppBtn = document.getElementById('start-app-btn');
 const backToHomeBtn = document.getElementById('back-to-home-btn');
 const mainAppSection = document.getElementById('main-app-section');
-const specialtyDropdown = document.getElementById('specialty-dropdown');
 const getQuestionsBtn = document.getElementById('get-questions-btn');
-const questionsForm = document.getElementById('questions-form');
-const submitAnswersBtn = document.getElementById('submit-answers-btn');
+const questionsContainer = document.getElementById('questions-container');
 const startOverBtn = document.getElementById('start-over-btn');
 const loadingSpinner = document.getElementById('loading-spinner');
 const specialtyError = document.getElementById('specialty-error');
@@ -32,6 +31,12 @@ const answersError = document.getElementById('answers-error');
 const majorSuggestions = document.getElementById('major-suggestions');
 const emailContact = document.getElementById('email-contact');
 const backToTopBtn = document.getElementById('back-to-top');
+
+// App State
+let selectedSpecialty = '';
+let currentQuestions = [];
+let currentQuestionIndex = 0;
+let userAnswers = {};
 
 // Initialize Charts
 function initializeCharts() {
@@ -43,7 +48,7 @@ function initializeCharts() {
             data: {
                 labels: ['دقة عالية', 'دقة متوسطة', 'دقة منخفضة'],
                 datasets: [{
-                    data: [85, 10, 5],
+                    data: [70, 20, 10],
                     backgroundColor: [
                         '#22C55E',
                         '#F59E0B',
@@ -181,6 +186,28 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize charts and animations
     initializeCharts();
     animateProgressCircles();
+    
+    // Specialty selection
+    const specialtyOptions = document.querySelectorAll('.specialty-option');
+    specialtyOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            // Remove selection from all options
+            specialtyOptions.forEach(opt => opt.classList.remove('selected'));
+            
+            // Select clicked option
+            this.classList.add('selected');
+            
+            // Update selected specialty
+            selectedSpecialty = this.getAttribute('data-value');
+            
+            // Enable start button
+            getQuestionsBtn.disabled = false;
+            getQuestionsBtn.textContent = `ابدأ الاختبار - ${this.querySelector('h4').textContent}`;
+            
+            // Clear error
+            specialtyError.textContent = '';
+        });
+    });
 });
 
 // Counter Animation Function
@@ -260,8 +287,18 @@ backToHomeBtn.addEventListener('click', () => {
 
 // Form Functions
 function resetForm() {
-    specialtyDropdown.value = '';
-    questionsForm.innerHTML = '';
+    // Reset specialty selection
+    selectedSpecialty = '';
+    currentQuestions = [];
+    currentQuestionIndex = 0;
+    userAnswers = {};
+    
+    // Clear specialty selection
+    document.querySelectorAll('.specialty-option').forEach(opt => opt.classList.remove('selected'));
+    getQuestionsBtn.disabled = true;
+    getQuestionsBtn.textContent = 'ابدأ الاختبار';
+    
+    // Clear errors
     specialtyError.textContent = '';
     answersError.textContent = '';
     majorSuggestions.innerHTML = '';
@@ -275,9 +312,7 @@ function resetForm() {
 
 // Get Questions
 getQuestionsBtn.addEventListener('click', async () => {
-    const specialty = specialtyDropdown.value;
-    
-    if (!specialty) {
+    if (!selectedSpecialty) {
         specialtyError.textContent = 'الرجاء اختيار تخصص.';
         return;
     }
@@ -291,13 +326,16 @@ getQuestionsBtn.addEventListener('click', async () => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ specialty: specialty })
+            body: JSON.stringify({ specialty: selectedSpecialty })
         });
         
         const data = await response.json();
         
         if (data.success) {
-            displayQuestions(data.questions);
+            currentQuestions = data.questions;
+            currentQuestionIndex = 0;
+            userAnswers = {};
+            displayCurrentQuestion();
             document.getElementById('specialty-selection').style.display = 'none';
             document.getElementById('questions-section').style.display = 'block';
         } else {
@@ -310,38 +348,113 @@ getQuestionsBtn.addEventListener('click', async () => {
     }
 });
 
-// Display Questions
-function displayQuestions(questions) {
-    questionsForm.innerHTML = '';
+// Display Current Question
+function displayCurrentQuestion() {
+    if (currentQuestionIndex >= currentQuestions.length) {
+        submitAnswers();
+        return;
+    }
     
-    questions.forEach((question, index) => {
-        const questionDiv = document.createElement('div');
-        questionDiv.className = 'question-group';
-        questionDiv.innerHTML = `
-            <label for="question-${index}">${question}</label>
-            <textarea id="question-${index}" name="question-${index}" rows="3" placeholder="اكتب إجابتك هنا..."></textarea>
-        `;
-        questionsForm.appendChild(questionDiv);
-    });
-}
-
-// Submit Answers
-submitAnswersBtn.addEventListener('click', async () => {
-    const textareas = questionsForm.querySelectorAll('textarea');
-    const answers = [];
+    const question = currentQuestions[currentQuestionIndex];
+    const progress = ((currentQuestionIndex + 1) / currentQuestions.length) * 100;
     
-    textareas.forEach((textarea, index) => {
-        if (!textarea.value.trim()) {
-            answersError.textContent = 'الرجاء الإجابة على جميع الأسئلة.';
-            return;
-        }
-        answers.push({
-            question: textarea.previousElementSibling.textContent,
-            answer: textarea.value.trim()
+    // Update progress
+    document.querySelector('.progress-fill').style.width = `${progress}%`;
+    document.getElementById('current-question').textContent = currentQuestionIndex + 1;
+    document.getElementById('total-questions').textContent = currentQuestions.length;
+    
+    // Update navigation buttons
+    const prevBtn = document.getElementById('prev-question-btn');
+    const nextBtn = document.getElementById('next-question-btn');
+    
+    prevBtn.disabled = currentQuestionIndex === 0;
+    
+    if (currentQuestionIndex === currentQuestions.length - 1) {
+        nextBtn.innerHTML = 'إنشاء الاقتراحات <i class="material-icons">send</i>';
+    } else {
+        nextBtn.innerHTML = 'التالي <i class="material-icons">arrow_forward</i>';
+    }
+    
+    // Display question
+    questionsContainer.innerHTML = `
+        <div class="question-container">
+            <div class="question-text">${question}</div>
+            <div class="answer-options">
+                <div class="answer-option" data-answer="نعم">
+                    <div class="option-radio"></div>
+                    <span>نعم</span>
+                </div>
+                <div class="answer-option" data-answer="غير متأكد">
+                    <div class="option-radio"></div>
+                    <span>غير متأكد</span>
+                </div>
+                <div class="answer-option" data-answer="لا">
+                    <div class="option-radio"></div>
+                    <span>لا</span>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Add click handlers for answer options
+    const answerOptions = document.querySelectorAll('.answer-option');
+    answerOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            // Remove selection from all options
+            answerOptions.forEach(opt => opt.classList.remove('selected'));
+            
+            // Select clicked option
+            this.classList.add('selected');
+            
+            // Store answer
+            userAnswers[currentQuestionIndex] = this.getAttribute('data-answer');
+            
+            // Enable next button
+            nextBtn.disabled = false;
         });
     });
     
-    if (answers.length !== textareas.length) {
+    // Pre-select if user already answered
+    if (userAnswers[currentQuestionIndex]) {
+        const selectedOption = document.querySelector(`[data-answer="${userAnswers[currentQuestionIndex]}"]`);
+        if (selectedOption) {
+            selectedOption.classList.add('selected');
+            nextBtn.disabled = false;
+        }
+    } else {
+        nextBtn.disabled = true;
+    }
+}
+
+// Navigation Buttons
+document.addEventListener('DOMContentLoaded', function() {
+    const prevBtn = document.getElementById('prev-question-btn');
+    const nextBtn = document.getElementById('next-question-btn');
+    
+    prevBtn.addEventListener('click', () => {
+        if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            displayCurrentQuestion();
+        }
+    });
+    
+    nextBtn.addEventListener('click', () => {
+        if (currentQuestionIndex < currentQuestions.length - 1) {
+            currentQuestionIndex++;
+            displayCurrentQuestion();
+        } else {
+            submitAnswers();
+        }
+    });
+});
+
+// Submit Answers
+async function submitAnswers() {
+    // Check if all questions are answered
+    const unansweredQuestions = currentQuestions.filter((_, index) => !userAnswers[index]);
+    
+    if (unansweredQuestions.length > 0) {
+        answersError.textContent = 'الرجاء الإجابة على جميع الأسئلة قبل الإرسال.';
         return;
     }
     
@@ -349,13 +462,18 @@ submitAnswersBtn.addEventListener('click', async () => {
     loadingSpinner.style.display = 'block';
     
     try {
+        const answers = currentQuestions.map((question, index) => ({
+            question: question,
+            answer: userAnswers[index]
+        }));
+        
         const response = await fetch('/get_suggestions', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                specialty: specialtyDropdown.value,
+                specialty: selectedSpecialty,
                 answers: answers
             })
         });
@@ -374,7 +492,7 @@ submitAnswersBtn.addEventListener('click', async () => {
     } finally {
         loadingSpinner.style.display = 'none';
     }
-});
+}
 
 // Display Suggestions
 function displaySuggestions(suggestions) {
@@ -497,16 +615,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 });
 
-// Parallax effect for floating shapes
-window.addEventListener('scroll', function() {
-    const scrolled = window.pageYOffset;
-    const shapes = document.querySelectorAll('.shape');
-    
-    shapes.forEach((shape, index) => {
-        const speed = 0.5 + (index * 0.1);
-        shape.style.transform = `translateY(${scrolled * speed}px) rotate(${scrolled * 0.1}deg)`;
-    });
-});
+
 
 // Smooth reveal animations for sections
 const revealSections = document.querySelectorAll('.features-section, .advanced-features-section, .stats-section, .how-it-works-section, .testimonials-section, .faq-section, .support-section, .app-info-section');
@@ -553,74 +662,6 @@ revealStyles.textContent = `
 
 document.head.appendChild(revealStyles);
 
-// Enhanced scroll effects
-window.addEventListener('scroll', function() {
-    const scrolled = window.pageYOffset;
-    const parallaxElements = document.querySelectorAll('.hero-section, .features-section, .stats-section');
-    
-    parallaxElements.forEach(element => {
-        const speed = 0.5;
-        element.style.transform = `translateY(${scrolled * speed}px)`;
-    });
-});
 
-// Add floating particles effect
-function createParticles() {
-    const particlesContainer = document.querySelector('.particles');
-    if (!particlesContainer) return;
-    
-    for (let i = 0; i < 50; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'particle';
-        particle.style.cssText = `
-            position: absolute;
-            width: ${Math.random() * 4 + 2}px;
-            height: ${Math.random() * 4 + 2}px;
-            background: rgba(255, 255, 255, ${Math.random() * 0.5 + 0.2});
-            border-radius: 50%;
-            left: ${Math.random() * 100}%;
-            top: ${Math.random() * 100}%;
-            animation: float-particle ${Math.random() * 10 + 10}s linear infinite;
-            animation-delay: ${Math.random() * 5}s;
-        `;
-        particlesContainer.appendChild(particle);
-    }
-}
 
-// Add particle animation CSS
-const particleStyles = document.createElement('style');
-particleStyles.textContent = `
-    @keyframes float-particle {
-        0% {
-            transform: translateY(100vh) rotate(0deg);
-            opacity: 0;
-        }
-        10% {
-            opacity: 1;
-        }
-        90% {
-            opacity: 1;
-        }
-        100% {
-            transform: translateY(-100px) rotate(360deg);
-            opacity: 0;
-        }
-    }
-    
-    .particles {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-        pointer-events: none;
-    }
-`;
-
-document.head.appendChild(particleStyles);
-
-// Initialize particles
-document.addEventListener('DOMContentLoaded', function() {
-    createParticles();
-}); 
+ 
