@@ -38,51 +38,9 @@ let currentQuestions = [];
 let currentQuestionIndex = 0;
 let userAnswers = {};
 
-// Initialize Charts
-function initializeCharts() {
-    // Accuracy Chart
-    const accuracyCtx = document.getElementById('accuracyChart');
-    if (accuracyCtx) {
-        new Chart(accuracyCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['دقة عالية', 'دقة متوسطة', 'دقة منخفضة'],
-                datasets: [{
-                    data: [70, 20, 10],
-                    backgroundColor: [
-                        '#22C55E',
-                        '#F59E0B',
-                        '#EF4444'
-                    ],
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            padding: 20,
-                            usePointStyle: true
-                        }
-                    }
-                }
-            }
-        });
-    }
-}
 
-// Progress Circles Animation
-function animateProgressCircles() {
-    const circles = document.querySelectorAll('.progress-circle');
-    circles.forEach(circle => {
-        const progress = circle.getAttribute('data-progress');
-        const percentage = (progress / 100) * 360;
-        circle.style.background = `conic-gradient(var(--primary) 0deg, var(--primary) ${percentage}deg, #E5E7EB ${percentage}deg)`;
-    });
-}
+
+
 
 
 
@@ -183,9 +141,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Initialize charts and animations
-    initializeCharts();
-    animateProgressCircles();
+
     
     // Specialty selection
     const specialtyOptions = document.querySelectorAll('.specialty-option');
@@ -321,7 +277,7 @@ getQuestionsBtn.addEventListener('click', async () => {
     loadingSpinner.style.display = 'block';
     
     try {
-        const response = await fetch('/get_questions', {
+        const response = await fetch('https://wojhati.onrender.com/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -467,7 +423,7 @@ async function submitAnswers() {
             answer: userAnswers[index]
         }));
         
-        const response = await fetch('/get_suggestions', {
+        const response = await fetch('https://wojhati.onrender.com/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
