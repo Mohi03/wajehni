@@ -1,297 +1,626 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // Get DOM elements for navigation
-    const startAppBtn = document.getElementById('start-app-btn');
-    const backToHomeBtn = document.getElementById('back-to-home-btn');
-    const mainAppSection = document.getElementById('main-app-section');
-    const landingPage = document.querySelector('.hero-section').parentElement;
+// Initialize AOS animations
+AOS.init({
+    duration: 800,
+    easing: 'ease-in-out',
+    once: true,
+    offset: 100
+});
 
-    // Navigation functionality
-    startAppBtn.addEventListener('click', () => {
-        // Hide landing page sections
-        document.querySelectorAll('.hero-section, .features-section, .how-it-works-section, .support-section, .app-info-section').forEach(section => {
-            section.style.display = 'none';
-        });
-        // Show main app section
-        mainAppSection.style.display = 'block';
-        // Scroll to top
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-
-    backToHomeBtn.addEventListener('click', () => {
-        // Show landing page sections
-        document.querySelectorAll('.hero-section, .features-section, .how-it-works-section, .support-section, .app-info-section').forEach(section => {
-            section.style.display = 'block';
-        });
-        // Hide main app section
-        mainAppSection.style.display = 'none';
-        // Reset app state
-        resetAppState();
-        // Scroll to top
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-
-    // Get DOM elements for main app functionality
-    const specialtyDropdown = document.getElementById('specialty-dropdown');
-    const getQuestionsBtn = document.getElementById('get-questions-btn');
-    const specialtyError = document.getElementById('specialty-error');
-    const specialtySelection = document.getElementById('specialty-selection');
-
-    const questionsSection = document.getElementById('questions-section');
-    const questionsForm = document.getElementById('questions-form');
-    const submitAnswersBtn = document.getElementById('submit-answers-btn');
-    const answersError = document.getElementById('answers-error');
-
-    const suggestionsSection = document.getElementById('suggestions-section');
-    const majorSuggestionsDiv = document.getElementById('major-suggestions');
-    const startOverBtn = document.getElementById('start-over-btn');
-
-    const loadingSpinner = document.getElementById('loading-spinner');
-
-    let currentQuestions = []; // To store questions received from the AI
-
-    // --- Event Listeners ---
-
-    getQuestionsBtn.addEventListener('click', async () => {
-        const specialty = specialtyDropdown.value;
-        if (!specialty) {
-            specialtyError.textContent = "الرجاء اختيار تخصص."; // Arabic: Please select a specialization.
-            return;
-        }
-        specialtyError.textContent = "";
-        showLoading();
-
-        try {
-            // Step 1: Send specialty to your Python backend to get questions
-            const response = await fetch('http://localhost:5001/', { 
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ specialty: specialty }), // Send specialty
-            });
-
-            if (!response.ok) {
-                throw new Error(`خطأ في الشبكة! الحالة: ${response.status}`); // Arabic: Network error! Status:
-            }
-
-            const data = await response.json();
-            // Parse the questions from the response text
-            const questionsText = data.questions;
-            currentQuestions = questionsText.split('\n').filter(q => q.trim() !== '');
-
-            if (currentQuestions && currentQuestions.length > 0) {
-                displayQuestions(currentQuestions);
-                specialtySelection.style.display = 'none';
-                questionsSection.style.display = 'block';
-            } else {
-                answersError.textContent = "تعذر استرداد الأسئلة. الرجاء المحاولة مرة أخرى."; // Arabic: Could not retrieve questions. Please try again.
-            }
-
-        } catch (error) {
-            console.error('خطأ في جلب الأسئلة:', error); // Arabic: Error fetching questions:
-            answersError.textContent = `فشل تحميل الأسئلة. ${error.message}`; // Arabic: Failed to load questions.
-        } finally {
-            hideLoading();
-        }
-    });
-
-    submitAnswersBtn.addEventListener('click', async () => {
-        answersError.textContent = "";
-        const studentAnswers = collectAnswers();
-
-        // Basic validation: Check if all answers are filled
-        const allAnswered = studentAnswers.every(item => item.answer.trim() !== "");
-        if (!allAnswered) {
-            answersError.textContent = "الرجاء الإجابة على جميع الأسئلة قبل الإرسال."; // Arabic: Please answer all questions before submitting.
-            return;
-        }
-
-        showLoading();
-
-        try {
-            // Step 2: Send questions and answers to your Python backend
-            const response = await fetch('http://localhost:5001/', { 
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ answers: studentAnswers }), // Send answers
-            });
-
-            if (!response.ok) {
-                throw new Error(`خطأ في الشبكة! الحالة: ${response.status}`); // Arabic: Network error! Status:
-            }
-
-            const data = await response.json();
-            // Parse the suggestions from the response text
-            const suggestionsText = data.suggestions;
-            
-            // Display the raw suggestions text for now
-            displaySuggestionsText(suggestionsText);
-            questionsSection.style.display = 'none';
-            suggestionsSection.style.display = 'block';
-
-        } catch (error) {
-            console.error('خطأ في جلب الاقتراحات:', error); // Arabic: Error fetching suggestions:
-            majorSuggestionsDiv.innerHTML = `<p class="error-message">فشل الحصول على الاقتراحات. ${error.message}</p>`; // Arabic: Failed to get suggestions.
-        } finally {
-            hideLoading();
-        }
-    });
-
-    startOverBtn.addEventListener('click', () => {
-        // Reset the UI
-        specialtySelection.style.display = 'block';
-        questionsSection.style.display = 'none';
-        suggestionsSection.style.display = 'none';
-
-        specialtyDropdown.value = "";
-        questionsForm.innerHTML = ""; // Clear previous questions
-        majorSuggestionsDiv.innerHTML = ""; // Clear previous suggestions
-        currentQuestions = []; // Reset stored questions
-        specialtyError.textContent = "";
-        answersError.textContent = "";
-    });
-
-    // --- Helper Functions ---
-
-    function displayQuestions(questions) {
-        questionsForm.innerHTML = ''; // Clear previous questions
-        questions.forEach((qText, index) => {
-            const questionGroup = document.createElement('div');
-            questionGroup.classList.add('question-group');
-
-            const label = document.createElement('label');
-            label.setAttribute('for', `answer-${index}`);
-            label.textContent = qText; // Display question text without numbering
-
-            const textarea = document.createElement('textarea');
-            textarea.id = `answer-${index}`;
-            textarea.name = `answer-${index}`;
-            textarea.rows = 4;
-            textarea.placeholder = "إجابتك هنا..."; // Arabic: Your answer here...
-            textarea.setAttribute('data-question', qText); // Store original question text
-
-            questionGroup.appendChild(label);
-            questionGroup.appendChild(textarea);
-            questionsForm.appendChild(questionGroup);
-        });
-    }
-
-    function collectAnswers() {
-        const qaPairs = [];
-        const textareas = questionsForm.querySelectorAll('textarea');
-        textareas.forEach(textarea => {
-            qaPairs.push({
-                question: textarea.getAttribute('data-question'),
-                answer: textarea.value
-            });
-        });
-        return qaPairs;
-    }
-
-    function displaySuggestionsText(suggestionsText) {
-        majorSuggestionsDiv.innerHTML = '';
-        if (!suggestionsText || suggestionsText.trim() === '') {
-            majorSuggestionsDiv.innerHTML = "<p>لم يتم العثور على اقتراحات تخصصات محددة بناءً على إجاباتك. الرجاء مراجعة ردودك أو المحاولة مرة أخرى.</p>"; // Arabic: No specific major suggestions could be generated based on your answers.
-            return;
-        }
-        
-        // Display the suggestions as formatted text
-        const suggestionItem = document.createElement('div');
-        suggestionItem.classList.add('suggestion-item');
-        
-        const suggestionContent = document.createElement('div');
-        suggestionContent.innerHTML = suggestionsText.replace(/\n/g, '<br>');
-        
-        suggestionItem.appendChild(suggestionContent);
-        majorSuggestionsDiv.appendChild(suggestionItem);
-    }
-
-    function showLoading() {
-        loadingSpinner.style.display = 'block';
-        // Disable buttons to prevent multiple clicks
-        getQuestionsBtn.disabled = true;
-        submitAnswersBtn.disabled = true;
-    }
-
-    function hideLoading() {
-        loadingSpinner.style.display = 'none';
-        // Re-enable buttons
-        getQuestionsBtn.disabled = false;
-        submitAnswersBtn.disabled = false;
-    }
-
-    function resetAppState() {
-        // Reset all app state when going back to home
-        specialtySelection.style.display = 'block';
-        questionsSection.style.display = 'none';
-        suggestionsSection.style.display = 'none';
-        specialtyDropdown.value = "";
-        questionsForm.innerHTML = "";
-        majorSuggestionsDiv.innerHTML = "";
-        currentQuestions = [];
-        specialtyError.textContent = "";
-        answersError.textContent = "";
-        hideLoading();
-    }
-
-    // === Support Section Interactivity ===
-
-    // Add a toast/snackbar element if not present
-    let toast = document.getElementById('custom-toast');
-    if (!toast) {
-        toast = document.createElement('div');
-        toast.id = 'custom-toast';
-        toast.style.position = 'fixed';
-        toast.style.bottom = '32px';
-        toast.style.right = '32px';
-        toast.style.background = 'var(--primary, #22C55E)';
-        toast.style.color = 'white';
-        toast.style.padding = '14px 28px';
-        toast.style.borderRadius = '10px';
-        toast.style.fontSize = '1em';
-        toast.style.fontWeight = 'bold';
-        toast.style.boxShadow = '0 2px 8px rgba(34,197,94,0.15)';
-        toast.style.opacity = '0';
-        toast.style.transition = 'opacity 0.3s';
-        toast.style.zIndex = '9999';
-        document.body.appendChild(toast);
-    }
-
-    function showToast(msg) {
-        toast.textContent = msg;
-        toast.style.opacity = '1';
+// Loading Screen
+window.addEventListener('load', function() {
+    const loadingScreen = document.getElementById('loading-screen');
+    setTimeout(() => {
+        loadingScreen.classList.add('hidden');
         setTimeout(() => {
-            toast.style.opacity = '0';
-        }, 1800);
-    }
+            loadingScreen.style.display = 'none';
+        }, 500);
+    }, 1500);
+});
 
-    // Find the email contact in the support section
-    const emailContact = document.getElementById('email-contact');
+// DOM Elements
+const startAppBtn = document.getElementById('start-app-btn');
+const backToHomeBtn = document.getElementById('back-to-home-btn');
+const mainAppSection = document.getElementById('main-app-section');
+const specialtyDropdown = document.getElementById('specialty-dropdown');
+const getQuestionsBtn = document.getElementById('get-questions-btn');
+const questionsForm = document.getElementById('questions-form');
+const submitAnswersBtn = document.getElementById('submit-answers-btn');
+const startOverBtn = document.getElementById('start-over-btn');
+const loadingSpinner = document.getElementById('loading-spinner');
+const specialtyError = document.getElementById('specialty-error');
+const answersError = document.getElementById('answers-error');
+const majorSuggestions = document.getElementById('major-suggestions');
+const emailContact = document.getElementById('email-contact');
+const backToTopBtn = document.getElementById('back-to-top');
+
+// Initialize Charts
+function initializeCharts() {
+    // Accuracy Chart
+    const accuracyCtx = document.getElementById('accuracyChart');
+    if (accuracyCtx) {
+        new Chart(accuracyCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['دقة عالية', 'دقة متوسطة', 'دقة منخفضة'],
+                datasets: [{
+                    data: [85, 10, 5],
+                    backgroundColor: [
+                        '#22C55E',
+                        '#F59E0B',
+                        '#EF4444'
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            usePointStyle: true
+                        }
+                    }
+                }
+            }
+        });
+    }
+}
+
+// Progress Circles Animation
+function animateProgressCircles() {
+    const circles = document.querySelectorAll('.progress-circle');
+    circles.forEach(circle => {
+        const progress = circle.getAttribute('data-progress');
+        const percentage = (progress / 100) * 360;
+        circle.style.background = `conic-gradient(var(--primary) 0deg, var(--primary) ${percentage}deg, #E5E7EB ${percentage}deg)`;
+    });
+}
+
+
+
+// Back to Top Button
+window.addEventListener('scroll', function() {
+    if (window.pageYOffset > 300) {
+        backToTopBtn.classList.add('show');
+    } else {
+        backToTopBtn.classList.remove('show');
+    }
+});
+
+backToTopBtn.addEventListener('click', function() {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+});
+
+// FAQ Toggle Functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // FAQ Toggle
+    const faqItems = document.querySelectorAll('.faq-item');
+    faqItems.forEach(item => {
+        const question = item.querySelector('.faq-question');
+        question.addEventListener('click', () => {
+            const isActive = item.classList.contains('active');
+            
+            // Close all FAQ items
+            faqItems.forEach(faqItem => {
+                faqItem.classList.remove('active');
+            });
+            
+            // Open clicked item if it wasn't active
+            if (!isActive) {
+                item.classList.add('active');
+            }
+        });
+    });
+
+    // Smooth scrolling for navigation links
+    const navLinks = document.querySelectorAll('.nav-menu a[href^="#"]');
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            const targetSection = document.querySelector(targetId);
+            
+            if (targetSection) {
+                const offsetTop = targetSection.offsetTop - 80; // Account for fixed nav
+                window.scrollTo({
+                    top: offsetTop,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+
+    // Statistics Counter Animation
+    const statNumbers = document.querySelectorAll('.stat-number[data-count]');
+    const observerOptions = {
+        threshold: 0.5,
+        rootMargin: '0px 0px -100px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const target = entry.target;
+                const count = parseInt(target.getAttribute('data-count'));
+                animateCounter(target, count);
+                observer.unobserve(target);
+            }
+        });
+    }, observerOptions);
+
+    statNumbers.forEach(stat => {
+        observer.observe(stat);
+    });
+
+    // Copy email functionality
     if (emailContact) {
-        emailContact.style.cursor = 'pointer';
-        emailContact.title = 'انسخ البريد الإلكتروني';
-        emailContact.addEventListener('click', () => {
-            navigator.clipboard.writeText('ONJPA57@gmail.com').then(() => {
-                showToast('تم النسخ');
+        emailContact.addEventListener('click', function() {
+            const email = this.textContent;
+            navigator.clipboard.writeText(email).then(() => {
+                showNotification('تم نسخ البريد الإلكتروني', 'success');
+            }).catch(() => {
+                showNotification('فشل في نسخ البريد الإلكتروني', 'error');
             });
         });
     }
 
-    // --- Social Links: Visual Feedback on Click ---
+    // Social links feedback
     const socialLinks = document.querySelectorAll('.support-item a');
     socialLinks.forEach(link => {
-        link.addEventListener('mousedown', () => {
-            link.style.background = 'rgba(34,197,94,0.10)';
-        });
-        link.addEventListener('mouseup', () => {
-            setTimeout(() => {
-                link.style.background = '';
-            }, 150);
-        });
-        link.addEventListener('mouseleave', () => {
-            link.style.background = '';
+        link.addEventListener('click', function() {
+            showNotification('جاري فتح الرابط...', 'info');
         });
     });
+
+    // Initialize charts and animations
+    initializeCharts();
+    animateProgressCircles();
+});
+
+// Counter Animation Function
+function animateCounter(element, target) {
+    let current = 0;
+    const increment = target / 100;
+    const timer = setInterval(() => {
+        current += increment;
+        if (current >= target) {
+            current = target;
+            clearInterval(timer);
+        }
+        element.textContent = Math.floor(current) + (target >= 1000 ? '+' : '');
+    }, 20);
+}
+
+// Notification System
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.innerHTML = `
+        <i class="material-icons">${type === 'success' ? 'check_circle' : type === 'error' ? 'error' : 'info'}</i>
+        <span>${message}</span>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Animate in
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 100);
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => {
+            document.body.removeChild(notification);
+        }, 300);
+    }, 3000);
+}
+
+// Navigation Functions
+startAppBtn.addEventListener('click', () => {
+    // Hide all landing page sections
+    document.querySelectorAll('.hero-section, .features-section, .advanced-features-section, .stats-section, .how-it-works-section, .testimonials-section, .faq-section, .support-section, .app-info-section, .footer').forEach(section => {
+        section.style.display = 'none';
+    });
+    
+    // Show main app section
+    mainAppSection.style.display = 'block';
+    
+    // Smooth scroll to top
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+});
+
+backToHomeBtn.addEventListener('click', () => {
+    // Show all landing page sections
+    document.querySelectorAll('.hero-section, .features-section, .advanced-features-section, .stats-section, .how-it-works-section, .testimonials-section, .faq-section, .support-section, .app-info-section, .footer').forEach(section => {
+        section.style.display = 'block';
+    });
+    
+    // Hide main app section
+    mainAppSection.style.display = 'none';
+    
+    // Reset form
+    resetForm();
+    
+    // Smooth scroll to top
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+});
+
+// Form Functions
+function resetForm() {
+    specialtyDropdown.value = '';
+    questionsForm.innerHTML = '';
+    specialtyError.textContent = '';
+    answersError.textContent = '';
+    majorSuggestions.innerHTML = '';
+    
+    // Hide sections
+    document.getElementById('specialty-selection').style.display = 'block';
+    document.getElementById('questions-section').style.display = 'none';
+    document.getElementById('suggestions-section').style.display = 'none';
+    loadingSpinner.style.display = 'none';
+}
+
+// Get Questions
+getQuestionsBtn.addEventListener('click', async () => {
+    const specialty = specialtyDropdown.value;
+    
+    if (!specialty) {
+        specialtyError.textContent = 'الرجاء اختيار تخصص.';
+        return;
+    }
+    
+    specialtyError.textContent = '';
+    loadingSpinner.style.display = 'block';
+    
+    try {
+        const response = await fetch('/get_questions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ specialty: specialty })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            displayQuestions(data.questions);
+            document.getElementById('specialty-selection').style.display = 'none';
+            document.getElementById('questions-section').style.display = 'block';
+        } else {
+            specialtyError.textContent = data.error || 'حدث خطأ في جلب الأسئلة.';
+        }
+    } catch (error) {
+        specialtyError.textContent = 'حدث خطأ في الاتصال بالخادم.';
+    } finally {
+        loadingSpinner.style.display = 'none';
+    }
+});
+
+// Display Questions
+function displayQuestions(questions) {
+    questionsForm.innerHTML = '';
+    
+    questions.forEach((question, index) => {
+        const questionDiv = document.createElement('div');
+        questionDiv.className = 'question-group';
+        questionDiv.innerHTML = `
+            <label for="question-${index}">${question}</label>
+            <textarea id="question-${index}" name="question-${index}" rows="3" placeholder="اكتب إجابتك هنا..."></textarea>
+        `;
+        questionsForm.appendChild(questionDiv);
+    });
+}
+
+// Submit Answers
+submitAnswersBtn.addEventListener('click', async () => {
+    const textareas = questionsForm.querySelectorAll('textarea');
+    const answers = [];
+    
+    textareas.forEach((textarea, index) => {
+        if (!textarea.value.trim()) {
+            answersError.textContent = 'الرجاء الإجابة على جميع الأسئلة.';
+            return;
+        }
+        answers.push({
+            question: textarea.previousElementSibling.textContent,
+            answer: textarea.value.trim()
+        });
+    });
+    
+    if (answers.length !== textareas.length) {
+        return;
+    }
+    
+    answersError.textContent = '';
+    loadingSpinner.style.display = 'block';
+    
+    try {
+        const response = await fetch('/get_suggestions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                specialty: specialtyDropdown.value,
+                answers: answers
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            displaySuggestions(data.suggestions);
+            document.getElementById('questions-section').style.display = 'none';
+            document.getElementById('suggestions-section').style.display = 'block';
+        } else {
+            answersError.textContent = data.error || 'حدث خطأ في جلب الاقتراحات.';
+        }
+    } catch (error) {
+        answersError.textContent = 'حدث خطأ في الاتصال بالخادم.';
+    } finally {
+        loadingSpinner.style.display = 'none';
+    }
+});
+
+// Display Suggestions
+function displaySuggestions(suggestions) {
+    majorSuggestions.innerHTML = '';
+    
+    suggestions.forEach(suggestion => {
+        const suggestionDiv = document.createElement('div');
+        suggestionDiv.className = 'suggestion-item';
+        suggestionDiv.innerHTML = `
+            <h3>${suggestion.title}</h3>
+            <p>${suggestion.description}</p>
+        `;
+        majorSuggestions.appendChild(suggestionDiv);
+    });
+}
+
+// Start Over
+startOverBtn.addEventListener('click', () => {
+    resetForm();
+});
+
+// Add CSS for notifications
+const notificationStyles = document.createElement('style');
+notificationStyles.textContent = `
+    .notification {
+        position: fixed;
+        top: 100px;
+        right: 20px;
+        background: white;
+        border-radius: 8px;
+        padding: 16px 20px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        z-index: 10000;
+        transform: translateX(400px);
+        transition: transform 0.3s ease;
+        border-right: 4px solid var(--primary);
+    }
+    
+    .notification.show {
+        transform: translateX(0);
+    }
+    
+    .notification-success {
+        border-right-color: var(--primary);
+    }
+    
+    .notification-error {
+        border-right-color: #EF4444;
+    }
+    
+    .notification-info {
+        border-right-color: #3B82F6;
+    }
+    
+    .notification i {
+        font-size: 20px;
+    }
+    
+    .notification-success i {
+        color: var(--primary);
+    }
+    
+    .notification-error i {
+        color: #EF4444;
+    }
+    
+    .notification-info i {
+        color: #3B82F6;
+    }
+    
+    .notification span {
+        font-weight: 500;
+        color: var(--text-primary);
+    }
+`;
+
+document.head.appendChild(notificationStyles);
+
+// Enhanced hover effects for interactive elements
+document.addEventListener('DOMContentLoaded', function() {
+    // Add hover effects to feature items
+    const featureItems = document.querySelectorAll('.feature-item');
+    featureItems.forEach(item => {
+        item.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-8px) scale(1.02)';
+        });
+        
+        item.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1)';
+        });
+    });
+
+    // Add hover effects to stat cards
+    const statCards = document.querySelectorAll('.stat-card');
+    statCards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-4px) scale(1.02)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1)';
+        });
+    });
+
+    // Add hover effects to testimonial cards
+    const testimonialCards = document.querySelectorAll('.testimonial-card');
+    testimonialCards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-4px) scale(1.01)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1)';
+        });
+    });
+
+
+});
+
+// Parallax effect for floating shapes
+window.addEventListener('scroll', function() {
+    const scrolled = window.pageYOffset;
+    const shapes = document.querySelectorAll('.shape');
+    
+    shapes.forEach((shape, index) => {
+        const speed = 0.5 + (index * 0.1);
+        shape.style.transform = `translateY(${scrolled * speed}px) rotate(${scrolled * 0.1}deg)`;
+    });
+});
+
+// Smooth reveal animations for sections
+const revealSections = document.querySelectorAll('.features-section, .advanced-features-section, .stats-section, .how-it-works-section, .testimonials-section, .faq-section, .support-section, .app-info-section');
+
+const revealSection = function(entries, observer) {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('section-revealed');
+            observer.unobserve(entry.target);
+        }
+    });
+};
+
+const sectionObserver = new IntersectionObserver(revealSection, {
+    root: null,
+    threshold: 0.15,
+});
+
+revealSections.forEach(section => {
+    sectionObserver.observe(section);
+});
+
+// Add CSS for section reveal animations
+const revealStyles = document.createElement('style');
+revealStyles.textContent = `
+    .features-section,
+    .advanced-features-section,
+    .stats-section,
+    .how-it-works-section,
+    .testimonials-section,
+    .faq-section,
+    .support-section,
+    .app-info-section {
+        opacity: 0;
+        transform: translateY(50px);
+        transition: all 0.8s ease;
+    }
+    
+    .section-revealed {
+        opacity: 1;
+        transform: translateY(0);
+    }
+`;
+
+document.head.appendChild(revealStyles);
+
+// Enhanced scroll effects
+window.addEventListener('scroll', function() {
+    const scrolled = window.pageYOffset;
+    const parallaxElements = document.querySelectorAll('.hero-section, .features-section, .stats-section');
+    
+    parallaxElements.forEach(element => {
+        const speed = 0.5;
+        element.style.transform = `translateY(${scrolled * speed}px)`;
+    });
+});
+
+// Add floating particles effect
+function createParticles() {
+    const particlesContainer = document.querySelector('.particles');
+    if (!particlesContainer) return;
+    
+    for (let i = 0; i < 50; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.cssText = `
+            position: absolute;
+            width: ${Math.random() * 4 + 2}px;
+            height: ${Math.random() * 4 + 2}px;
+            background: rgba(255, 255, 255, ${Math.random() * 0.5 + 0.2});
+            border-radius: 50%;
+            left: ${Math.random() * 100}%;
+            top: ${Math.random() * 100}%;
+            animation: float-particle ${Math.random() * 10 + 10}s linear infinite;
+            animation-delay: ${Math.random() * 5}s;
+        `;
+        particlesContainer.appendChild(particle);
+    }
+}
+
+// Add particle animation CSS
+const particleStyles = document.createElement('style');
+particleStyles.textContent = `
+    @keyframes float-particle {
+        0% {
+            transform: translateY(100vh) rotate(0deg);
+            opacity: 0;
+        }
+        10% {
+            opacity: 1;
+        }
+        90% {
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(-100px) rotate(360deg);
+            opacity: 0;
+        }
+    }
+    
+    .particles {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        pointer-events: none;
+    }
+`;
+
+document.head.appendChild(particleStyles);
+
+// Initialize particles
+document.addEventListener('DOMContentLoaded', function() {
+    createParticles();
 }); 
