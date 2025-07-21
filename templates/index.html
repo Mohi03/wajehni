@@ -45,8 +45,7 @@
                 <li><a href="#about">حول التطبيق</a></li>
             </ul>
             <div class="nav-actions">
-                <button class="nav-btn secondary">تسجيل الدخول</button>
-                <button class="nav-btn primary">ابدأ مجاناً</button>
+                <button class="nav-btn primary" id="nav-start-btn">ابدأ مجاناً</button>
             </div>
         </div>
     </nav>
@@ -531,7 +530,6 @@
                         </div>
                         <div class="option-content">
                             <h4>شعبة العلوم التجريبية</h4>
-                            <p>للطلاب المهتمين بالعلوم الطبيعية والكيمياء والبيولوجيا</p>
                         </div>
                     </div>
                     <div class="specialty-option" data-value="Mathematics">
@@ -540,7 +538,6 @@
                         </div>
                         <div class="option-content">
                             <h4>شعبة الرياضيات</h4>
-                            <p>للطلاب المهتمين بالرياضيات والفيزياء والهندسة</p>
                         </div>
                     </div>
                     <div class="specialty-option" data-value="Technical Mathematics">
@@ -549,7 +546,6 @@
                         </div>
                         <div class="option-content">
                             <h4>شعبة التقني رياضي</h4>
-                            <p>للطلاب المهتمين بالتكنولوجيا والهندسة التطبيقية</p>
                         </div>
                     </div>
                     <div class="specialty-option" data-value="Management and Economics">
@@ -558,7 +554,6 @@
                         </div>
                         <div class="option-content">
                             <h4>شعبة التسيير والاقتصاد</h4>
-                            <p>للطلاب المهتمين بالإدارة والاقتصاد والتجارة</p>
                         </div>
                     </div>
                     <div class="specialty-option" data-value="Foreign Languages">
@@ -567,7 +562,6 @@
                         </div>
                         <div class="option-content">
                             <h4>شعبة اللغات الأجنبية</h4>
-                            <p>للطلاب المهتمين باللغات والترجمة والعلاقات الدولية</p>
                         </div>
                     </div>
                     <div class="specialty-option" data-value="Literature and Philosophy">
@@ -576,12 +570,29 @@
                         </div>
                         <div class="option-content">
                             <h4>شعبة الآداب والفلسفة</h4>
-                            <p>للطلاب المهتمين بالأدب والفلسفة والعلوم الإنسانية</p>
                         </div>
                     </div>
                 </div>
                 <button id="get-questions-btn" disabled>ابدأ الاختبار</button>
                 <p id="specialty-error" class="error-message"></p>
+
+                <script>
+                // Hide the 'ابدأ الاختبار' button when questions start
+                document.addEventListener('DOMContentLoaded', function() {
+                    var getQuestionsBtn = document.getElementById('get-questions-btn');
+                    var questionsSection = document.getElementById('questions-section');
+                    var observer = new MutationObserver(function() {
+                        if (questionsSection && questionsSection.style.display === 'block') {
+                            getQuestionsBtn.style.display = 'none';
+                        } else {
+                            getQuestionsBtn.style.display = '';
+                        }
+                    });
+                    if (questionsSection) {
+                        observer.observe(questionsSection, { attributes: true, attributeFilter: ['style'] });
+                    }
+                });
+                </script>
             </div>
 
             <div id="questions-section" style="display: none;">
