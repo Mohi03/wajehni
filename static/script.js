@@ -309,6 +309,8 @@ getQuestionsBtn.addEventListener('click', async () => {
             displayCurrentQuestion();
             document.getElementById('specialty-selection').style.display = 'none';
             document.getElementById('questions-section').style.display = 'block';
+            var getQuestionsBtn = document.getElementById('get-questions-btn');
+            if (getQuestionsBtn) getQuestionsBtn.style.display = 'none';
         } else {
             specialtyError.textContent = data.error || 'حدث خطأ في جلب الأسئلة.';
         }
