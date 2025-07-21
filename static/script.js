@@ -284,8 +284,9 @@ getQuestionsBtn.addEventListener('click', async () => {
             },
             body: JSON.stringify({ specialty: selectedSpecialty })
         });
-        
+        console.log('Raw response:', response);
         const data = await response.json();
+        console.log('Parsed data:', data);
         
         if (data.success) {
             currentQuestions = data.questions;
