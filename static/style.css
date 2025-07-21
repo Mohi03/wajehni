@@ -505,9 +505,7 @@ body {
     background: var(--primary-lighter);
 }
 
-.testimonials-section {
-    background: var(--background);
-}
+
 
 .faq-section {
     background: var(--primary-lighter);
@@ -692,130 +690,7 @@ body {
     font-weight: bold;
 }
 
-/* === Advanced Features Section === */
-.advanced-features-section {
-    background: var(--background);
-    padding: 100px 0;
-}
 
-.advanced-features-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 80px;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.advanced-feature {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 60px;
-    align-items: center;
-}
-
-.advanced-feature:nth-child(even) {
-    direction: ltr;
-}
-
-.advanced-feature:nth-child(even) .feature-content {
-    direction: rtl;
-}
-
-.feature-visual {
-    position: relative;
-}
-
-.chart-container {
-    width: 100%;
-    height: 300px;
-    background: var(--primary-lighter);
-    border-radius: var(--radius-xl);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: var(--shadow);
-}
-
-.progress-circles {
-    display: flex;
-    gap: 32px;
-    justify-content: center;
-}
-
-.progress-circle {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    background: conic-gradient(var(--primary) 0deg, var(--primary) 0deg, #E5E7EB 0deg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    font-weight: 700;
-    color: var(--primary-dark);
-}
-
-.progress-circle::before {
-    content: '';
-    position: absolute;
-    width: 60px;
-    height: 60px;
-    background: white;
-    border-radius: 50%;
-}
-
-.progress-circle span {
-    position: relative;
-    z-index: 1;
-}
-
-.feature-metrics {
-    display: flex;
-    gap: 32px;
-    margin-top: 24px;
-}
-
-.metric {
-    text-align: center;
-}
-
-.metric-value {
-    display: block;
-    font-size: 2rem;
-    font-weight: 800;
-    color: var(--primary);
-    margin-bottom: 4px;
-}
-
-.metric-label {
-    font-size: 0.875rem;
-    color: var(--text-secondary);
-}
-
-.feature-list {
-    margin-top: 24px;
-}
-
-.feature-list-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 16px;
-    padding: 12px;
-    background: var(--primary-lighter);
-    border-radius: var(--radius);
-    transition: all 0.3s ease;
-}
-
-.feature-list-item:hover {
-    background: var(--primary-light);
-    transform: translateX(-4px);
-}
-
-.feature-list-item i {
-    color: var(--primary);
-    font-size: 1.25rem;
-}
 
 /* === Statistics Section === */
 .stats-grid {
@@ -947,93 +822,7 @@ body {
     font-size: 3rem;
 }
 
-/* === Testimonials Section === */
-.testimonials-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 32px;
-    max-width: 1200px;
-    margin: 0 auto;
-}
 
-.testimonial-card {
-    background: var(--surface);
-    border-radius: var(--radius-xl);
-    padding: 32px;
-    box-shadow: var(--shadow);
-    border: 1px solid var(--border-light);
-    transition: all 0.3s ease;
-    position: relative;
-}
-
-.testimonial-card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-lg);
-}
-
-.testimonial-content {
-    position: relative;
-    margin-bottom: 24px;
-}
-
-.quote-icon {
-    color: var(--primary);
-    font-size: 2rem;
-    opacity: 0.3;
-    position: absolute;
-    top: -10px;
-    right: -10px;
-}
-
-.testimonial-content p {
-    color: var(--text-secondary);
-    font-size: 1.1rem;
-    line-height: 1.6;
-    font-style: italic;
-}
-
-.testimonial-author {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-}
-
-.author-avatar {
-    width: 50px;
-    height: 50px;
-    background: var(--primary-light);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.author-avatar i {
-    color: var(--primary);
-    font-size: 1.5rem;
-}
-
-.author-info h4 {
-    color: var(--text-primary);
-    font-weight: 600;
-    margin-bottom: 4px;
-}
-
-.author-info span {
-    color: var(--text-secondary);
-    font-size: 0.875rem;
-}
-
-.rating {
-    display: flex;
-    gap: 2px;
-    margin-right: auto;
-}
-
-.rating i {
-    color: #F59E0B;
-    font-size: 1rem;
-}
 
 
 
@@ -1874,7 +1663,6 @@ button:disabled {
     .support-section,
     .app-info-section,
     .stats-section,
-    .testimonials-section,
     .faq-section {
         padding: 60px 0;
     }
@@ -1886,8 +1674,7 @@ button:disabled {
     .feature-grid,
     .steps-container,
     .support-grid,
-    .stats-grid,
-    .testimonials-grid {
+    .stats-grid {
         grid-template-columns: 1fr;
         gap: 24px;
     }
@@ -1935,7 +1722,6 @@ button:disabled {
     .support-section,
     .app-info-section,
     .stats-section,
-    .testimonials-section,
     .faq-section {
         padding: 40px 0;
     }
@@ -1943,8 +1729,7 @@ button:disabled {
     .feature-item,
     .step-item,
     .support-item,
-    .stat-card,
-    .testimonial-card {
+    .stat-card {
         padding: 24px 20px;
     }
     
