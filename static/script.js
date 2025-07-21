@@ -241,6 +241,15 @@ backToHomeBtn.addEventListener('click', () => {
     });
 });
 
+// Make nav 'ابدأ مجاناً' button trigger the main start action
+const navStartBtn = document.getElementById('nav-start-btn');
+if (navStartBtn && startAppBtn) {
+    navStartBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        startAppBtn.click();
+    });
+}
+
 // Form Functions
 function resetForm() {
     // Reset specialty selection
@@ -441,9 +450,16 @@ async function submitAnswers() {
         });
         
         const data = await response.json();
+        console.log('Raw suggestions response:', response);
+        console.log('Parsed suggestions data:', data);
         
-        if (data.success) {
-            displaySuggestions(data.suggestions);
+        if (data.suggestions) {
+            console.log('suggestions:', data.suggestions);
+            displaySuggestions(Array.isArray(data.suggestions)
+                ? data.suggestions
+                : (typeof data.suggestions === 'string'
+                    ? data.suggestions.split('\n').filter(s => s.trim() !== '').map(s => ({ title: s, description: '' }))
+                    : []));
             document.getElementById('questions-section').style.display = 'none';
             document.getElementById('suggestions-section').style.display = 'block';
         } else {
@@ -459,14 +475,17 @@ async function submitAnswers() {
 // Display Suggestions
 function displaySuggestions(suggestions) {
     majorSuggestions.innerHTML = '';
-    
     suggestions.forEach(suggestion => {
         const suggestionDiv = document.createElement('div');
         suggestionDiv.className = 'suggestion-item';
-        suggestionDiv.innerHTML = `
-            <h3>${suggestion.title}</h3>
-            <p>${suggestion.description}</p>
-        `;
+        if (typeof suggestion === 'object' && suggestion.title) {
+            suggestionDiv.innerHTML = `
+                <h3>${suggestion.title}</h3>
+                <p>${suggestion.description || ''}</p>
+            `;
+        } else {
+            suggestionDiv.innerHTML = `<p>${suggestion}</p>`;
+        }
         majorSuggestions.appendChild(suggestionDiv);
     });
 }
