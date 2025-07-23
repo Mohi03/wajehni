@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl"> <!-- Added dir="rtl" for Arabic content -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> test </title> <!-- Arabic title -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1> الاسم </h1>
+
+        <div id="specialty-selection">
+            <p>الرجاء اختيار تخصصك في المرحلة الثانوية:</p>
+            <select id="specialty-dropdown">
+                <option value="">--اختر--</option>
+                <option value="Experimental Sciences">شعبة العلوم التجريبية</option>
+                <option value="Mathematics">شعبة الرياضيات</option>
+                <option value="Technical Mathematics">شعبة التقني رياضي</option>
+                <option value="Management and Economics">شعبة التسيير والاقتصاد</option>
+                <option value="Foreign Languages">شعبة اللغات الأجنبية</option>
+                <option value="Literature and Philosophy">شعبة الآداب والفلسفة</option>
+            </select>
+            <button id="get-questions-btn">احصل على الأسئلة</button>
+            <p id="specialty-error" class="error-message"></p>
+        </div>
+
+        <div id="questions-section" style="display: none;">
+            <h2>أجب عن الأسئلة التالية:</h2>
+            <form id="questions-form">
+                <!-- Questions will be dynamically loaded here by JavaScript -->
+            </form>
+            <button id="submit-answers-btn">انشاء الاقتراحات </button>
+            <p id="answers-error" class="error-message"></p>
+        </div>
+
+        <div id="suggestions-section" style="display: none;">
+            <h2>التخصصات الجامعية المقترحة:</h2>
+            <div id="major-suggestions">
+                <!-- Major suggestions will be displayed here by JavaScript -->
+            </div>
+            <button id="start-over-btn">البدء من جديد</button>
+        </div>
+
+        <div id="loading-spinner" class="spinner" style="display: none;"></div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
